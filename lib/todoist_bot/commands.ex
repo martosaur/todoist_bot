@@ -32,6 +32,11 @@ defmodule TodoistBot.Commands do
           |> Interaction.put_user_state(language: language)
           |> Interaction.put_resp_answer_callback_text(:language_changed)
           |> Interaction.put_resp_type_answer_callback()
+
+        "/logout.confirm.yes" ->
+          i
+          |> Interaction.put_resp_text(:logout_success_text)
+          |> Interaction.put_resp_type_edit_text()
       end
     else
       cond do
@@ -52,6 +57,17 @@ defmodule TodoistBot.Commands do
           i
           |> Interaction.put_resp_text(:about_text)
           |> Interaction.put_resp_parse_mode_markdown()
+          |> Interaction.put_resp_type_message()
+
+        Interaction.command?(i, "/logout") ->
+          i
+          |> Interaction.put_resp_text(:logout_confirm_text)
+          |> Interaction.add_resp_inline_keyboard()
+          |> Interaction.add_resp_inline_keyboard_row()
+          |> Interaction.add_resp_inline_keyboard_callback_button(
+            :logout_confirm_yes_button,
+            "/logout.confirm.yes"
+          )
           |> Interaction.put_resp_type_message()
 
         Interaction.authorized?(i) ->

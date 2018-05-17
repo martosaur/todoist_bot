@@ -7,7 +7,8 @@ defmodule TodoistBot.Interaction.User do
             auth_state: "",
             access_token: "",
             last_chat_id: nil,
-            language: "en"
+            language: "en",
+            delete: false
 
   def new(%Nadia.Model.Update{callback_query: nil} = update) do
     %User{

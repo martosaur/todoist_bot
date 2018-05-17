@@ -31,6 +31,12 @@ defmodule TodoistBot.Storage do
     end
   end
 
+  def delete_user(%Interaction{user: %{id: user_id}} = i) do
+    :ets.delete(:users, user_id)
+
+    i
+  end
+
   def complete_authorization(auth_code, auth_state) do
     user_id =
       auth_state

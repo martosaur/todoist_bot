@@ -408,4 +408,14 @@ defmodule TodoistBotTest.Interaction do
              [%Nadia.Model.InlineKeyboardButton{text: "default_test", callback_data: "data"}]
            ]
   end
+
+  test "set_user_to_delete" do
+    i =
+      %Interaction{
+        user: %Interaction.User{}
+      }
+      |> Interaction.set_user_to_delete()
+
+    assert i.user.delete == true
+  end
 end

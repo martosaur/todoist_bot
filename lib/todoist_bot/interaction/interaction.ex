@@ -106,4 +106,8 @@ defmodule TodoistBot.Interaction do
       List.replace_at(keyboard, -1, row ++ [button])
     )
   end
+
+  def set_user_to_delete(%Interaction{} = i) do
+    put_in(i.user.delete, true)
+  end
 end

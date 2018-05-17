@@ -11,7 +11,7 @@ defmodule TodoistBot.Processor do
       |> TodoistBot.Interaction.new()
       |> TodoistBot.Storage.load_user()
       |> TodoistBot.Commands.match()
-      |> Storage.save_user()
+      |> save_user_state()
       |> send_response()
     rescue
       error -> Logger.warn(error)
@@ -74,5 +74,13 @@ defmodule TodoistBot.Processor do
       |> Enum.reject(fn {_, v} -> v == nil end)
 
     Nadia.edit_message_text(response.chat_id, response.message_id, "", response.text, options)
+  end
+
+  defp save_user_state(%TodoistBot.Interaction{} = i) do
+    if i.user.delete do
+      Storage.delete_user(i)
+    else
+      Storage.save_user(i)
+    end
   end
 end

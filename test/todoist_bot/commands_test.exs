@@ -303,4 +303,67 @@ defmodule TodoistBotTest.Commands do
     assert i.response.message_id == 222
     assert i.response.parse_mode == nil
   end
+
+  test "callback query /logout.confirm.yes" do
+    i =
+      %Interaction{
+        request: %Interaction.Request{
+          callback: "/logout.confirm.yes"
+        },
+        response: %Interaction.Response{
+          chat_id: 111,
+          message_id: 222,
+          callback_query_id: 333
+        },
+        user: %Interaction.User{
+          language: "en"
+        }
+      }
+      |> Commands.match()
+
+    assert i.response.text == Strings.get_string(:logout_success_text, "en")
+    assert i.response.type == :edit_text
+    assert i.response.chat_id == 111
+    assert i.response.reply_markup == nil
+    assert i.response.callback_query_id == 333
+    assert i.response.answer_callback_query_text == nil
+    assert i.response.message_id == 222
+    assert i.response.parse_mode == nil
+  end
+
+  test "/logout" do
+    i =
+      %Interaction{
+        request: %Interaction.Request{
+          text: "/logout"
+        },
+        response: %Interaction.Response{
+          chat_id: 111
+        },
+        user: %Interaction.User{
+          auth_code: "auth_code"
+        }
+      }
+      |> Commands.match()
+
+    assert i.response.text == Strings.get_string(:logout_confirm_text, "en")
+    assert i.response.type == :message
+    assert i.response.chat_id == 111
+
+    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{
+             inline_keyboard: [
+               [
+                 %Nadia.Model.InlineKeyboardButton{
+                   text: Strings.get_string(:logout_confirm_yes_button, "en"),
+                   callback_data: "/logout.confirm.yes"
+                 }
+               ]
+             ]
+           }
+
+    assert i.response.callback_query_id == nil
+    assert i.response.answer_callback_query_text == nil
+    assert i.response.message_id == nil
+    assert i.response.parse_mode == nil
+  end
 end

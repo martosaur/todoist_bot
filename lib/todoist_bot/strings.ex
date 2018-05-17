@@ -50,9 +50,11 @@ defmodule TodoistBot.Strings do
       "ru" => "Настройки языка"
     },
     help_text: %{
-      "en" => "/help - show this help\n/settings - change language\n/about - about this bot",
+      "en" =>
+        "/help - show this help\n/settings - change language\n/about - about this bot\n/logout - make this bot forget you",
       "pl" => nil,
-      "ru" => "/help - показать эту справку\n/settings - выбрать язык\n/about - информация о боте"
+      "ru" =>
+        "/help - показать эту справку\n/settings - выбрать язык\n/about - информация о боте\n/logout - стереть вас из памяти этого бота"
     },
     about_text: %{
       "en" =>
@@ -60,6 +62,22 @@ defmodule TodoistBot.Strings do
       "pl" => nil,
       "ru" =>
         "*Telegram for Todoist* – это простой бот, добавляющий входящие задачи в Todoist через телеграм. Этот бот создан @martosaur и не создан, связан или поддерживается компанией Doist. Поучаствовать в разработке можно в [этом репозитории](http://www.example.com/)"
+    },
+    logout_confirm_text: %{
+      "en" =>
+        "Are you sure you want to logout and disappear without a trace from this bot's life?",
+      "pl" => nil,
+      "ru" => "Вы увеерны, что хотите заставить бота забыть о вашем существовании?"
+    },
+    logout_confirm_yes_button: %{
+      "en" => "Yes",
+      "pl" => "Tak",
+      "ru" => "Да"
+    },
+    logout_success_text: %{
+      "en" => "Who are you? Do I know you?",
+      "pl" => nil,
+      "ru" => "Кто вы? Мы знакомы?"
     },
     back: %{
       "en" => "<<"

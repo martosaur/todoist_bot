@@ -3,7 +3,7 @@ defmodule TodoistApi do
   use HTTPoison.Base
   require Logger
 
-  def refresh_access_token(%Interaction{} = i) do
+  def refresh_access_token_if_needed(%Interaction{user: %Interaction.User{access_token: ""}} = i) do
     body = %{
       client_id: TodoistBot.Config.todoist_app_client_id(),
       client_secret: TodoistBot.Config.todoist_app_client_secret(),
@@ -21,10 +21,10 @@ defmodule TodoistApi do
         )
 
         i
-        |> Interaction.put_user_state(auth_code: "", access_token: "")
-        |> Interaction.new_user_state()
     end
   end
+
+  def refresh_access_token_if_needed(%Interaction{} = i), do: i
 
   def put_text_to_inbox(%Interaction{} = i) do
     body = %{
@@ -35,8 +35,17 @@ defmodule TodoistApi do
       {:ok, %{status_code: 200}} ->
         Interaction.put_resp_text(i, :task_added_text)
 
-      error ->
+      {:ok, error} ->
         Logger.error("Could not add task for user #{i.user.id}. Response: #{inspect(error)}")
+
+        i
+        |> Interaction.put_resp_text(:add_task_error_text)
+        |> Interaction.put_user_state(auth_code: "", access_token: "")
+        |> Interaction.new_user_state()
+
+      {:error, error} ->
+        Logger.error("Could not add task for user #{i.user.id}. Response: #{inspect(error)}")
+
         Interaction.put_resp_text(i, :add_task_error_text)
     end
   end

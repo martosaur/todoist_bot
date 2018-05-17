@@ -73,7 +73,7 @@ defmodule TodoistBot.Commands do
 
         Interaction.authorized?(i) ->
           i
-          |> TodoistApi.refresh_access_token()
+          |> TodoistApi.refresh_access_token_if_needed()
           |> TodoistApi.put_text_to_inbox()
           |> Interaction.put_resp_type_message()
 

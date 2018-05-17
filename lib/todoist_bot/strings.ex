@@ -79,6 +79,11 @@ defmodule TodoistBot.Strings do
       "pl" => nil,
       "ru" => "Кто вы? Мы знакомы?"
     },
+    add_task_error_text: %{
+      "en" => "Something went terribly wrong 😢 Let's maybe try again?",
+      "pl" => nil,
+      "ru" => "Что-то пошло не так 😢 Может попробуем еще раз?"
+    },
     back: %{
       "en" => "<<"
     },

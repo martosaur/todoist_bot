@@ -20,6 +20,8 @@ defmodule TodoistApi do
         )
 
         i
+        |> Interaction.put_user_state(auth_code: "", access_token: "")
+        |> Interaction.new_user_state()
     end
   end
 
@@ -34,7 +36,7 @@ defmodule TodoistApi do
 
       error ->
         Logger.error("Could not add task for user #{i.user.id}. Response: #{inspect(error)}")
-        i
+        Interaction.put_resp_text(i, :add_task_error_text)
     end
   end
 

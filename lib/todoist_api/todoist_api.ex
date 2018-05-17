@@ -11,7 +11,8 @@ defmodule TodoistApi do
     }
 
     case post("https://todoist.com/oauth/access_token", body, []) do
-      {:ok, %{status_code: 200, body: %{"access_token" => token}}} ->
+      {:ok, %{status_code: 200, body: body}} ->
+        %{"access_token" => token} = Poison.decode!(body)
         Interaction.put_user_state(i, access_token: token)
 
       error ->

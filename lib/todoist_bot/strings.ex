@@ -58,10 +58,10 @@ defmodule TodoistBot.Strings do
     },
     about_text: %{
       "en" =>
-        "*Telegram for Todoist* is a simple bot for adding Inbox tasks through Telegram. This bot is created by @martosaur and is not created by, affiliated with, or supported by Doist. If you want to contribute please see [this repo](http://www.example.com/)",
+        "*Telegram for Todoist* is a simple bot for adding Inbox tasks through Telegram. This bot is created by @martosaur and is not created by, affiliated with, or supported by Doist. If you want to contribute please see [this repo](https://github.com/martosaur/todoist_bot)",
       "pl" => nil,
       "ru" =>
-        "*Telegram for Todoist* – это простой бот, добавляющий входящие задачи в Todoist через телеграм. Этот бот создан @martosaur и не создан, связан или поддерживается компанией Doist. Поучаствовать в разработке можно в [этом репозитории](http://www.example.com/)"
+        "*Telegram for Todoist* – это простой бот, добавляющий входящие задачи в Todoist через телеграм. Этот бот создан @martosaur и не создан, связан или поддерживается компанией Doist. Поучаствовать в разработке можно в [этом репозитории](https://github.com/martosaur/todoist_bot)"
     },
     logout_confirm_text: %{
       "en" =>

@@ -15,9 +15,9 @@ defmodule TodoistApi do
         Interaction.put_user_state(i, access_token: token)
 
       error ->
-        # Logger.error(
-        #   "Could not get access token for user #{i.user.id}. Response: #{inspect(error)}"
-        # )
+        Logger.error(
+          "Could not get access token for user #{i.user.id}. Response: #{inspect(error)}"
+        )
 
         i
         |> Interaction.put_user_state(auth_code: "", access_token: "")
@@ -35,7 +35,7 @@ defmodule TodoistApi do
         Interaction.put_resp_text(i, :task_added_text)
 
       error ->
-        # Logger.error("Could not add task for user #{i.user.id}. Response: #{inspect(error)}")
+        Logger.error("Could not add task for user #{i.user.id}. Response: #{inspect(error)}")
         Interaction.put_resp_text(i, :add_task_error_text)
     end
   end

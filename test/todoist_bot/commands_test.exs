@@ -329,6 +329,7 @@ defmodule TodoistBotTest.Commands do
     assert i.response.answer_callback_query_text == nil
     assert i.response.message_id == 222
     assert i.response.parse_mode == nil
+    assert i.user.delete == true
   end
 
   test "/logout" do

@@ -67,7 +67,7 @@ defmodule TodoistBot.Strings do
       "en" =>
         "Are you sure you want to logout and disappear without a trace from this bot's life?",
       "pl" => nil,
-      "ru" => "Вы увеерны, что хотите заставить бота забыть о вашем существовании?"
+      "ru" => "Вы уверeны, что хотите заставить бота забыть о вашем существовании?"
     },
     logout_confirm_yes_button: %{
       "en" => "Yes",

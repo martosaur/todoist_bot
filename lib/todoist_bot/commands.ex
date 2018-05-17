@@ -36,6 +36,7 @@ defmodule TodoistBot.Commands do
         "/logout.confirm.yes" ->
           i
           |> Interaction.put_resp_text(:logout_success_text)
+          |> Interaction.set_user_to_delete()
           |> Interaction.put_resp_type_edit_text()
       end
     else

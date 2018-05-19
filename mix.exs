@@ -25,7 +25,9 @@ defmodule TodoistBot.MixProject do
       {:nadia, "~> 0.4.3"},
       {:cowboy, "~> 2.4"},
       {:plug, "~> 1.5"},
-      {:timber, "~> 2.5"}
+      {:timber, "~> 2.5"},
+      {:ecto, "~> 2.0"},
+      {:postgrex, "~> 0.11"}
     ]
   end
 end

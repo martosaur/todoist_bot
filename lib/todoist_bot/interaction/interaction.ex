@@ -38,6 +38,14 @@ defmodule TodoistBot.Interaction do
     put_in(i.user, user)
   end
 
+  def put_user_from_db(%Interaction{} = i, db_user) do
+    put_in(i.user, db_user)
+    |> put_user_state(
+      last_chat_id: i.user.last_chat_id,
+      raw: i.user.raw
+    )
+  end
+
   def put_user_state(%Interaction{} = i, fields \\ []) do
     user = struct(i.user, fields)
     put_in(i.user, user)

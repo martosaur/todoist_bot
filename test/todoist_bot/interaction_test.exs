@@ -83,7 +83,7 @@ defmodule TodoistBotTest.Interaction do
     assert i.response.callback_query_id == "456"
     assert i.response.message_id == 666
 
-    assert i.user.id == 123
+    assert i.user.telegram_id == 123
     assert i.user.last_chat_id == 789
 
     assert i.user.raw == %Nadia.Model.User{
@@ -164,7 +164,7 @@ defmodule TodoistBotTest.Interaction do
     assert i.response.callback_query_id == nil
     assert i.response.message_id == nil
 
-    assert i.user.id == 222
+    assert i.user.telegram_id == 222
     assert i.user.last_chat_id == 111
 
     assert i.user.raw == %Nadia.Model.User{
@@ -239,7 +239,7 @@ defmodule TodoistBotTest.Interaction do
     i =
       %Interaction{
         user: %Interaction.User{
-          id: 111
+          telegram_id: 111
         }
       }
       |> Interaction.new_user_state()
@@ -252,18 +252,18 @@ defmodule TodoistBotTest.Interaction do
     i =
       %Interaction{
         user: %Interaction.User{
-          id: 111
+          telegram_id: 111
         }
       }
       |> Interaction.put_user_state(
-        id: 222,
+        telegram_id: 222,
         last_chat_id: 333,
         language: "zh",
         auth_code: "code",
         access_token: "token"
       )
 
-    assert i.user.id == 222
+    assert i.user.telegram_id == 222
     assert i.user.last_chat_id == 333
     assert i.user.language == "zh"
     assert i.user.auth_code == "code"
@@ -274,7 +274,7 @@ defmodule TodoistBotTest.Interaction do
     i =
       %Interaction{
         user: %Interaction.User{
-          id: 111
+          telegram_id: 111
         }
       }
       |> Interaction.put_user_state(hello_world: "test")
@@ -417,5 +417,39 @@ defmodule TodoistBotTest.Interaction do
       |> Interaction.set_user_to_delete()
 
     assert i.user.delete == true
+  end
+
+  test "put_user_from_db" do
+    db_user = %Interaction.User{
+      id: 99,
+      telegram_id: 111,
+      last_chat_id: 0,
+      auth_code: "valid code",
+      auth_state: "valid state",
+      access_token: "valid token"
+    }
+
+    i =
+      %Interaction{
+        user: %Interaction.User{
+          telegram_id: 111,
+          last_chat_id: 222,
+          auth_code: "pew",
+          auth_state: "pew",
+          access_token: "pew",
+          raw: %{a: 1},
+          delete: true
+        }
+      }
+      |> Interaction.put_user_from_db(db_user)
+
+    assert i.user.id == 99
+    assert i.user.telegram_id == 111
+    assert i.user.last_chat_id == 222
+    assert i.user.auth_code == "valid code"
+    assert i.user.auth_state == "valid state"
+    assert i.user.access_token == "valid token"
+    assert i.user.raw == %{a: 1}
+    assert i.user.delete == false
   end
 end

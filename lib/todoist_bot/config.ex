@@ -44,4 +44,22 @@ defmodule TodoistBot.Config do
 
     if Mix.env() == :test, do: "test", else: result
   end
+
+  def db_url do
+    case System.get_env("DATABASE_URL") do
+      nil ->
+        ""
+
+      s ->
+        s
+    end
+  end
+
+  def db_ssl do
+    case Mix.env() do
+      :dev -> false
+      :test -> false
+      _ -> true
+    end
+  end
 end

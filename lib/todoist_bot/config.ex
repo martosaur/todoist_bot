@@ -62,4 +62,14 @@ defmodule TodoistBot.Config do
       _ -> true
     end
   end
+
+  def bot_metrics_token do
+    case System.get_env("BOT_METRICS_TOKEN") do
+      nil ->
+        ""
+
+      s ->
+        s
+    end
+  end
 end

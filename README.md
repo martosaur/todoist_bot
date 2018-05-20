@@ -1,21 +1,8 @@
 # TodoistBot
 
-**TODO: Add description**
+A simple Telegram bot for adding tasks in your [Todoist](https://todoist.com) inbox. It uses [Nadia](https://github.com/zhyu/nadia) for telegram bot api client, [Timber.io](https://timber.io) for logging and is hosted on [Heroku](https://heroku.com)
 
-## Installation
+## How it looks like
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `todoist_bot` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:todoist_bot, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/todoist_bot](https://hexdocs.pm/todoist_bot).
+![demo image](demo.png)
 

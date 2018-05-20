@@ -19,7 +19,7 @@ defmodule TodoistBot.BotMetricsApi do
 
   def send_incoming_request_to_analytics(%TodoistBot.Interaction{} = i) do
     if TodoistBot.Interaction.callback_query?(i) do
-      i.request.callback_query
+      i.request.callback
     else
       case i.request.text do
         "/" <> _ ->

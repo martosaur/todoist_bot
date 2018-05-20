@@ -21,7 +21,13 @@ defmodule TodoistBot.BotMetricsApi do
     if TodoistBot.Interaction.callback_query?(i) do
       i.request.callback_query
     else
-      i.request.text
+      case i.request.text do
+        "/" <> _ ->
+          i.request.text
+
+        _ ->
+          "<some user task>"
+      end
     end
     |> post_message(:incoming, i.user.telegram_id)
   end

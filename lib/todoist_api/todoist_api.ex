@@ -35,17 +35,18 @@ defmodule TodoistApi do
       {:ok, %{status_code: 200}} ->
         Interaction.put_resp_text(i, :task_added_text)
 
-      {:ok, error} ->
+      {:ok, %{status_code: 403} = resp} ->
         Logger.error(
-          "Could not add task for user #{i.user.telegram_id}. Response: #{inspect(error)}"
+          "Could not add task for user #{i.user.telegram_id}. Response: #{inspect(resp)}"
         )
 
         i
-        |> Interaction.put_resp_text(:add_task_error_text)
         |> Interaction.put_user_state(auth_code: "", access_token: "")
         |> Interaction.new_user_state()
+        |> TodoistBot.Commands.request_authorization()
+        |> Interaction.put_resp_text(:error_403_text)
 
-      {:error, error} ->
+      {_, error} ->
         Logger.error(
           "Could not add task for user #{i.user.telegram_id}. Response: #{inspect(error)}"
         )

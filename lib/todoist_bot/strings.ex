@@ -84,6 +84,13 @@ defmodule TodoistBot.Strings do
       "pl" => nil,
       "ru" => "Что-то пошло не так 😢 Может попробуем еще раз?"
     },
+    error_403_text: %{
+      "en" =>
+        "Todoist did not believe me and shut the door 😱 I'll have to authenticate you again.",
+      "pl" => nil,
+      "ru" =>
+        "Todoist не поверил, что я – это вы и хлопнул дверью 😱 Боюсь, придется авторизоваться снова."
+    },
     empty_input_text: %{
       "en" => "Did you say something?",
       "pl" => nil,

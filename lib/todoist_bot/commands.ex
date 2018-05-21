@@ -90,7 +90,7 @@ defmodule TodoistBot.Commands do
     end
   end
 
-  defp request_authorization(%Interaction{} = i) do
+  def request_authorization(%Interaction{} = i) do
     i
     |> Interaction.put_resp_text(:authorization_request_text)
     |> Interaction.add_resp_inline_keyboard()

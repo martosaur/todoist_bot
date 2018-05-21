@@ -84,6 +84,11 @@ defmodule TodoistBot.Strings do
       "pl" => nil,
       "ru" => "Что-то пошло не так 😢 Может попробуем еще раз?"
     },
+    empty_input_text: %{
+      "en" => "Did you say something?",
+      "pl" => nil,
+      "ru" => "Вы что-то сказали?"
+    },
     back: %{
       "en" => "<<"
     },

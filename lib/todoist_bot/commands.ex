@@ -71,10 +71,15 @@ defmodule TodoistBot.Commands do
           )
           |> Interaction.put_resp_type_message()
 
-        Interaction.authorized?(i) ->
+        Interaction.authorized?(i) && Interaction.has_text?(i) ->
           i
           |> TodoistApi.refresh_access_token_if_needed()
           |> TodoistApi.put_text_to_inbox()
+          |> Interaction.put_resp_type_message()
+
+        Interaction.authorized?(i) ->
+          i
+          |> Interaction.put_resp_text(:empty_input_text)
           |> Interaction.put_resp_type_message()
 
         true ->

@@ -25,6 +25,10 @@ defmodule TodoistBot.Interaction do
     i.user.auth_code != ""
   end
 
+  def has_text?(%Interaction{} = i) do
+    i.request.text != ""
+  end
+
   def callback_query?(%Interaction{} = i) do
     i.request.callback != ""
   end

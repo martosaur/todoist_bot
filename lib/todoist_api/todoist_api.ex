@@ -31,7 +31,7 @@ defmodule TodoistApi do
       content: i.request.text
     }
 
-    case post("https://beta.todoist.com/api/v7/items/add", body, get_headers(i)) do
+    case post("https://todoist.com/api/v7/quick/add", body, get_headers(i)) do
       {:ok, %{status_code: 200}} ->
         Interaction.put_resp_text(i, :task_added_text)
 

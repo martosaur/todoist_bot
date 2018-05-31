@@ -1,7 +1,7 @@
 defmodule TodoistBot.Api do
   use Plug.Router
 
-  @scope "task:add"
+  @scope "data:read_write"
 
   plug(Plug.Logger)
   plug(:match)

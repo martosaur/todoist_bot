@@ -28,7 +28,7 @@ defmodule TodoistApi do
 
   def put_text_to_inbox(%Interaction{} = i) do
     body = %{
-      content: i.request.text
+      text: i.request.text
     }
 
     case post("https://todoist.com/api/v7/quick/add", body, get_headers(i)) do

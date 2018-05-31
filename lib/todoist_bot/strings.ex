@@ -112,6 +112,13 @@ defmodule TodoistBot.Strings do
       "en" => "default_test",
       "pl" => nil,
       "ru" => "тест"
+    },
+    PSA_rich_add_enabled: %{
+      "en" =>
+        "📢 Hooray! Now you can submit tasks using special syntax for #project, @label and +assignee. Oh, and due date parsing should work too! 📢",
+      "pl" => nil,
+      "ru" =>
+        "📢 Ура! Теперь этот бот поддерживает специальный синтаксис для #проектов, @меток и +исполнителей. Ах да, и сроки выполнения тоже! 📢"
     }
   }
 

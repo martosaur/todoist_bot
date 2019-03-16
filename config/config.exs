@@ -6,6 +6,8 @@ config :todoist_bot, TodoistBot.Storage.Repo, adapter: Ecto.Adapters.Postgres
 
 config :todoist_bot, ecto_repos: [TodoistBot.Storage.Repo]
 
+config :logger, level: :info
+
 # This configuration is loaded before any dependency and is restricted
 # to this project. If another project depends on this project, this
 # file won't be loaded nor affect the parent project. For this reason,
@@ -34,6 +36,3 @@ config :todoist_bot, ecto_repos: [TodoistBot.Storage.Repo]
 #     import_config "#{Mix.env}.exs"
 
 config :nadia, token: {:system, "NADIA_BOT_TOKEN"}
-
-# Import Timber, structured logging
-import_config "timber.exs"

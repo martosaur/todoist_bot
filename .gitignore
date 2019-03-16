@@ -27,3 +27,5 @@ todoist_bot-*.tar
 dev.sh
 staging.sh
 production.sh
+
+app*.yaml

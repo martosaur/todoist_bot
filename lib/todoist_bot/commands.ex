@@ -2,8 +2,9 @@ defmodule TodoistBot.Commands do
   alias TodoistBot.Interaction
   require Logger
 
+  @spec match(TodoistBot.Interaction.t()) :: map()
   def match(%Interaction{} = i) do
-    Logger.info(inspect(i))
+    Logger.debug(inspect(i))
 
     if Interaction.callback_query?(i) do
       case i.request.callback do
@@ -97,7 +98,7 @@ defmodule TodoistBot.Commands do
     |> Interaction.add_resp_inline_keyboard_row()
     |> Interaction.add_resp_inline_keyboard_link_button(
       :authorization_request_button,
-      "#{TodoistBot.Config.app_host()}authorize?uuid=#{i.user.auth_state}&language=#{
+      "#{TodoistBot.Config.app_host()}/authorize?uuid=#{i.user.auth_state}&language=#{
         i.user.language
       }"
     )

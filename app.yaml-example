@@ -1,0 +1,18 @@
+runtime: gs://elixir-runtime/elixir.yaml
+env: flex
+runtime_config:
+  release_app: todoist_bot
+beta_settings:
+    cloud_sql_instances: "DB-CONNECTION-NAME"
+env_variables:
+  BOT_METRICS_TOKEN: 
+  DATABASE_USERNAME: 
+  DATABASE_PASSWORD: 
+  DATABASE_NAME: your_preferred_name
+  DATABASE_SOCKET_DIR: "/cloudsql/DB-CONNECTION-NAME"
+  NADIA_BOT_TOKEN: "NADIA_BOT_TOKEN"
+  TODOIST_ADDRESS: https://project-name.appspot.com
+  TODOIST_CLIENT_ID: 
+  TODOIST_CLIENT_SECRET: 
+automatic_scaling:
+  max_num_instances: 1

@@ -10,66 +10,40 @@ defmodule TodoistBot.Config do
   end
 
   def app_host do
-    case System.get_env("TODOIST_ADDRESS") do
-      nil ->
-        "http://example.com/"
+    result = System.get_env("TODOIST_ADDRESS") || "http://example.com"
 
-      s ->
-        s
-    end
+    if Mix.env() == :test, do: "http://example.com", else: result
   end
 
   def todoist_app_client_id do
-    result =
-      case System.get_env("TODOIST_CLIENT_ID") do
-        nil ->
-          ""
-
-        s ->
-          s
-      end
+    result = System.get_env("TODOIST_CLIENT_ID") || ""
 
     if Mix.env() == :test, do: "test", else: result
   end
 
   def todoist_app_client_secret do
-    result =
-      case System.get_env("TODOIST_CLIENT_SECRET") do
-        nil ->
-          ""
-
-        s ->
-          s
-      end
+    result = System.get_env("TODOIST_CLIENT_SECRET") || ""
 
     if Mix.env() == :test, do: "test", else: result
   end
 
-  def db_url do
-    case System.get_env("DATABASE_URL") do
-      nil ->
-        ""
-
-      s ->
-        s
-    end
+  def db_username do
+    System.get_env("DATABASE_USERNAME") || ""
   end
 
-  def db_ssl do
-    case Mix.env() do
-      :dev -> false
-      :test -> false
-      _ -> true
-    end
+  def db_password do
+    System.get_env("DATABASE_PASSWORD") || ""
+  end
+
+  def db_name do
+    System.get_env("DATABASE_NAME") || ""
+  end
+
+  def db_socket_dir do
+    System.get_env("DATABASE_SOCKET_DIR") || ""
   end
 
   def bot_metrics_token do
-    case System.get_env("BOT_METRICS_TOKEN") do
-      nil ->
-        ""
-
-      s ->
-        s
-    end
+    System.get_env("BOT_METRICS_TOKEN") || ""
   end
 end

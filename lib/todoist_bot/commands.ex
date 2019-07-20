@@ -3,8 +3,6 @@ defmodule TodoistBot.Commands do
   require Logger
 
   def match(%Interaction{} = i) do
-    Logger.info(inspect(i))
-
     if Interaction.callback_query?(i) do
       case i.request.callback do
         "/unauthorized.settings" ->

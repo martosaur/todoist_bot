@@ -24,7 +24,8 @@ defmodule TodoistBot.MixProject do
     [
       {:nadia, git: "https://github.com/zhyu/nadia.git"},
       {:plug_cowboy, "~> 2.1"},
-      {:plug, "~> 1.8"}
+      {:plug, "~> 1.8"},
+      {:jason, "~> 1.1"}
     ]
   end
 end

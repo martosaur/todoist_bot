@@ -4,11 +4,10 @@ defmodule TodoistBot.Application do
   def start(_type, _args) do
     children = [
       TodoistBot.Poller,
-      TodoistBot.Storage.Repo,
-      Plug.Adapters.Cowboy2.child_spec(
+      Plug.Cowboy.child_spec(
         scheme: :http,
         plug: TodoistBot.Api,
-        options: [port: TodoistBot.Config.app_port()]
+        options: [port: Application.fetch_env!(:todoist_bot, :app_port)]
       )
     ]
 

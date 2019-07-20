@@ -97,7 +97,7 @@ defmodule TodoistBot.Commands do
     |> Interaction.add_resp_inline_keyboard_row()
     |> Interaction.add_resp_inline_keyboard_link_button(
       :authorization_request_button,
-      "#{TodoistBot.Config.app_host()}authorize?uuid=#{i.user.auth_state}&language=#{
+      "#{Application.fetch_env!(:todoist_bot, :app_host)}authorize?uuid=#{i.user.auth_state}&language=#{
         i.user.language
       }"
     )

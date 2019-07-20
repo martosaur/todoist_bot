@@ -1,19 +1,14 @@
 defmodule TodoistBot.Interaction.User do
   alias __MODULE__
-  use Ecto.Schema
 
-  schema "users" do
-    field(:telegram_id, :integer)
-    field(:last_chat_id, :integer)
-    field(:auth_code, :string, default: "")
-    field(:auth_state, :string, default: "")
-    field(:access_token, :string, default: "")
-    field(:language, :string, default: "en")
-    field(:delete, :boolean, virtual: true, default: false)
-    field(:raw, :map, virtual: true)
-
-    timestamps()
-  end
+  defstruct telegram_id: nil,
+            last_chat_id: nil,
+            auth_code: "",
+            auth_state: "",
+            access_token: "",
+            language: "en",
+            delete: false,
+            raw: %{}
 
   def new(%Nadia.Model.Update{callback_query: nil} = update) do
     %User{

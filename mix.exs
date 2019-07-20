@@ -5,7 +5,7 @@ defmodule TodoistBot.MixProject do
     [
       app: :todoist_bot,
       version: "0.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -22,12 +22,9 @@ defmodule TodoistBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:nadia, "~> 0.4.3"},
-      {:cowboy, "~> 2.4"},
-      {:plug, "~> 1.5"},
-      {:timber, "~> 2.5"},
-      {:ecto, "~> 2.0"},
-      {:postgrex, "~> 0.11"}
+      {:nadia, git: "https://github.com/zhyu/nadia.git"},
+      {:plug_cowboy, "~> 2.1"},
+      {:plug, "~> 1.8"}
     ]
   end
 end

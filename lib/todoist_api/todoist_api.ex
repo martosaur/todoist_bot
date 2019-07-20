@@ -5,14 +5,14 @@ defmodule TodoistApi do
 
   def refresh_access_token_if_needed(%Interaction{user: %Interaction.User{access_token: ""}} = i) do
     body = %{
-      client_id: TodoistBot.Config.todoist_app_client_id(),
-      client_secret: TodoistBot.Config.todoist_app_client_secret(),
+      client_id: Application.fetch_env!(:todoist_bot, :todoist_app_client_id),
+      client_secret: Application.fetch_env!(:todoist_bot, :todoist_app_client_secret),
       code: i.user.auth_code
     }
 
     case post("https://todoist.com/oauth/access_token", body, []) do
       {:ok, %{status_code: 200, body: body}} ->
-        %{"access_token" => token} = Poison.decode!(body)
+        %{"access_token" => token} = Jason.decode!(body)
         Interaction.put_user_state(i, access_token: token)
 
       error ->
@@ -61,12 +61,12 @@ defmodule TodoistApi do
     ]
   end
 
-  defp process_request_body(body) do
+  def process_request_body(body) do
     body
-    |> Poison.encode!()
+    |> Jason.encode!()
   end
 
-  defp process_request_headers(headers) do
+  def process_request_headers(headers) do
     [{"Content-Type", "application/json"} | headers]
   end
 end

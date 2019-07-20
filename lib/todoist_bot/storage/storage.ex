@@ -2,24 +2,22 @@ defmodule TodoistBot.Storage do
   alias TodoistBot.Interaction
   require Logger
 
+  def storage do
+    Application.fetch_env!(:todoist_bot, :dets_file) |> String.to_atom()
+  end
+
+  defmacro with_dets(filename, do: block) do
+    quote do
+      {:ok, _} = :dets.open_file(unquote(filename), type: :set)
+      result = unquote(block)
+      :dets.close(unquote(filename))
+      result
+    end
+  end
+
   def save_user(%Interaction{} = i) do
-    case get_user(i.user.telegram_id) do
-      nil ->
-        i.user
-
-      user ->
-        user
-    end
-    |> Ecto.Changeset.change(Map.from_struct(i.user))
-    |> TodoistBot.Storage.Repo.insert_or_update()
-    |> case do
-      {:ok, _} ->
-        i
-
-      {:error, u} ->
-        Logger.error("Could not insert_or_update user: #{inspect(u)}")
-        i
-    end
+    {:ok, user} = save_or_insert_user(i.user)
+    %{i | user: user}
   end
 
   def load_user(%Interaction{user: %{telegram_id: telegram_id}} = i) do
@@ -33,13 +31,15 @@ defmodule TodoistBot.Storage do
   end
 
   def delete_user(%Interaction{user: user} = i) do
-    case TodoistBot.Storage.Repo.delete(user) do
-      {:ok, _} ->
-        i
+    with_dets storage() do
+      case :dets.delete(storage(), user.telegram_id) do
+        :ok ->
+          i
 
-      {:error, u} ->
-        Logger.error("Could not delete user #{inspect(u)}")
-        i
+        {:error, u} ->
+          Logger.error("Could not delete user #{inspect(u)}")
+          i
+      end
     end
   end
 
@@ -60,8 +60,8 @@ defmodule TodoistBot.Storage do
 
       user ->
         user
-        |> Ecto.Changeset.change(%{auth_code: auth_code})
-        |> TodoistBot.Storage.Repo.insert_or_update()
+        |> Map.put(:auth_code, auth_code)
+        |> save_or_insert_user()
         |> case do
           {:ok, user} ->
             {:ok, user.last_chat_id, user.language}
@@ -75,6 +75,32 @@ defmodule TodoistBot.Storage do
   end
 
   defp get_user(telegram_id) do
-    TodoistBot.Storage.Repo.get_by(Interaction.User, telegram_id: telegram_id)
+    with_dets storage() do
+      case :dets.lookup(storage(), telegram_id) do
+        [{^telegram_id, user}] -> user
+        _ -> nil
+      end
+    end
+  end
+
+  defp save_or_insert_user(%{telegram_id: telegram_id} = user) do
+    with_dets storage() do
+      user_for_insertion =
+        case get_user(telegram_id) do
+          nil ->
+            user
+
+          existing_user ->
+            Map.merge(existing_user, user)
+        end
+
+      case :dets.insert(storage(), {telegram_id, user_for_insertion}) do
+        :ok ->
+          {:ok, user_for_insertion}
+
+        error ->
+          error
+      end
+    end
   end
 end

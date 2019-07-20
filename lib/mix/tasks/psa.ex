@@ -1,7 +1,8 @@
 defmodule Mix.Tasks.Psa do
   use Mix.Task
-  import Ecto.Query
   require Logger
+  require TodoistBot.Storage
+  alias TodoistBot.Storage
 
   @moduledoc """
   The list of available PSAa:\n
@@ -9,16 +10,18 @@ defmodule Mix.Tasks.Psa do
   """
 
   @psas ["rich_add_enabled"]
+  # :ets.fun2ms(fn {_, %{access_token: token}} = res when token != "" -> res end)
+  @active_users [{{:_, %{access_token: :"$1"}}, [{:"/=", :"$1", ""}], [:"$_"]}]
 
   @shortdoc "Sends everyone a public service announcement. Use with caution!"
   def run({_, [psa_name], _}) when psa_name in @psas do
     {:ok, _} = Application.ensure_all_started(:todoist_bot)
 
     r =
-      TodoistBot.Interaction.User
-      |> where([u], u.access_token != "")
-      |> TodoistBot.Storage.Repo.all()
-      |> Enum.map(fn user ->
+      Storage.with_dets Storage.storage() do
+        :dets.select(Storage.storage(), @active_users)
+      end
+      |> Enum.map(fn {_, user} ->
         Task.async(fn -> notify_user(user, :"PSA_#{psa_name}") end)
       end)
       |> Task.yield_many(30000)

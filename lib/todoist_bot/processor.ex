@@ -9,14 +9,12 @@ defmodule TodoistBot.Processor do
     try do
       message
       |> Interaction.new()
-      |> send_to_metrics(:incoming)
       |> TodoistBot.Storage.load_user()
       |> TodoistBot.Commands.match()
       |> save_user_state()
-      |> send_to_metrics(:outgoing)
       |> send_response()
     rescue
-      error -> Logger.warn(error)
+      error -> Logger.warn(inspect(error))
     end
   end
 
@@ -24,7 +22,7 @@ defmodule TodoistBot.Processor do
     try do
       send_response(i)
     rescue
-      error -> Logger.warn(error)
+      error -> Logger.warn(inspect(error))
     end
   end
 
@@ -84,15 +82,5 @@ defmodule TodoistBot.Processor do
     else
       Storage.save_user(i)
     end
-  end
-
-  defp send_to_metrics(%Interaction{} = i, :incoming) do
-    Task.start(TodoistBot.BotMetricsApi, :send_incoming_request_to_analytics, [i])
-    i
-  end
-
-  defp send_to_metrics(%Interaction{} = i, :outgoing) do
-    Task.start(TodoistBot.BotMetricsApi, :send_outgoing_request_to_analytics, [i])
-    i
   end
 end

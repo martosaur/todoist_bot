@@ -421,7 +421,6 @@ defmodule TodoistBotTest.Interaction do
 
   test "put_user_from_db" do
     db_user = %Interaction.User{
-      id: 99,
       telegram_id: 111,
       last_chat_id: 0,
       auth_code: "valid code",
@@ -443,7 +442,6 @@ defmodule TodoistBotTest.Interaction do
       }
       |> Interaction.put_user_from_db(db_user)
 
-    assert i.user.id == 99
     assert i.user.telegram_id == 111
     assert i.user.last_chat_id == 222
     assert i.user.auth_code == "valid code"

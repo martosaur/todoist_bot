@@ -49,6 +49,8 @@ defmodule TodoistBot.Api do
     end
   end
 
+  post("/:token/", to: TodoistBot.Webhook)
+
   match _ do
     send_resp(conn, 404, "Resource not found")
   end

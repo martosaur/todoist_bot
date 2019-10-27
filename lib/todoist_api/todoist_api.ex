@@ -28,10 +28,10 @@ defmodule TodoistApi do
 
   def put_text_to_inbox(%Interaction{} = i) do
     body = %{
-      text: i.request.text
+      content: i.request.text
     }
 
-    case post("https://todoist.com/api/v7/quick/add", body, get_headers(i)) do
+    case post("https://api.todoist.com/sync/v8/items/add", body, get_headers(i)) do
       {:ok, %{status_code: 200}} ->
         Interaction.put_resp_text(i, :task_added_text)
 

@@ -7,7 +7,7 @@ defmodule TodoistBot.Interaction.Request do
     %Request{
       raw: update,
       chat_id: update.message.chat.id,
-      text: update.message.text || ""
+      text: update.message.text || update.message.caption || ""
     }
   end
 

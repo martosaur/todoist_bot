@@ -22,11 +22,11 @@ defmodule TodoistBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.6.1", override: true},
+      {:httpoison, "~> 2.2.0", override: true},
       {:nadia, git: "https://github.com/zhyu/nadia.git"},
-      {:plug_cowboy, "~> 2.1"},
-      {:plug, "~> 1.8"},
-      {:jason, "~> 1.1"}
+      {:plug_cowboy, "~> 2.6"},
+      {:plug, "~> 1.15"},
+      {:jason, "~> 1.4"}
     ]
   end
 end

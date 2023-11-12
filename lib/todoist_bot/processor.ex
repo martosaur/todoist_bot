@@ -14,7 +14,7 @@ defmodule TodoistBot.Processor do
       |> save_user_state()
       |> send_response()
     rescue
-      error -> Logger.warn(inspect(error))
+      error -> Logger.warning(inspect(error))
     end
   end
 
@@ -22,7 +22,7 @@ defmodule TodoistBot.Processor do
     try do
       send_response(i)
     rescue
-      error -> Logger.warn(inspect(error))
+      error -> Logger.warning(inspect(error))
     end
   end
 

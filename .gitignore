@@ -27,6 +27,4 @@ todoist_bot-*.tar
 # Ignore dets files
 *.storage
 
-config/test.exs
 config/dev.exs
-config/prod.exs

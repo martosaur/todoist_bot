@@ -1,0 +1,1 @@
+Mox.defmock(TodoistBot.Nadia.API.Mock, for: TodoistBot.Nadia.API)

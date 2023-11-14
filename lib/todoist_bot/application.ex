@@ -9,16 +9,37 @@ defmodule TodoistBot.Application do
         options: [port: Application.fetch_env!(:todoist_bot, :app_port)]
       )
 
-    children =
-      case TodoistBot.Webhook.setup_webhook() do
-        :ok ->
-          [router]
-
-        {:error, _} ->
-          [TodoistBot.Poller, router]
-      end
-
     opts = [strategy: :one_for_one, name: TodoistBot.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children(router), opts)
+  end
+  
+  if Mix.env() == :test do
+    def children(router) do
+      [router]
+    end
+    
+  else
+    def children(router) do
+      poller_or_webhook =
+        if Application.get_env(:todoist_bot, :use_webhook) == "true" do
+          %{
+            id: WebhookSetup,
+            start: {TodoistBot.Webhook, :setup_webhook, []},
+            restart: :transient
+          }
+        else
+          TodoistBot.Poller
+        end
+      
+      [
+        %{
+          id: WebhookCleanup,
+          start: {TodoistBot.Webhook, :delete_webhook, []},
+          restart: :transient
+        },
+        poller_or_webhook,
+        router
+      ]
+    end
   end
 end

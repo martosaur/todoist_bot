@@ -1,6 +1,8 @@
 defmodule TodoistBot.Poller do
   use GenServer
   require Logger
+  
+  alias TodoistBot.Nadia.API
 
   def start_link(_state) do
     Logger.info("Started poller")
@@ -14,7 +16,7 @@ defmodule TodoistBot.Poller do
 
   def handle_cast(:update, offset) do
     new_offset =
-      Nadia.get_updates(offset: offset)
+      API.get_updates(offset: offset)
       |> process_messages
 
     {:noreply, new_offset + 1, 100}

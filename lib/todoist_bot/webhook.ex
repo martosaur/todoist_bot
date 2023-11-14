@@ -1,5 +1,7 @@
 defmodule TodoistBot.Webhook do
   use Plug.Builder
+  
+  alias TodoistBot.Nadia.API
 
   plug(:check_webhook_enabled)
   plug(:check_token)
@@ -13,20 +15,21 @@ defmodule TodoistBot.Webhook do
   plug(:parse_update)
   plug(:invoke_processor)
   plug(:respond)
+  
+  def delete_webhook() do
+    with :ok <- API.delete_webhook() do
+      :ignore
+    end
+  end
 
   def setup_webhook do
-    Nadia.delete_webhook()
+    host = Application.fetch_env!(:todoist_bot, :app_host)
+    path = Application.fetch_env!(:todoist_bot, :webhook_token)
+    max_connections = Application.get_env(:todoist_bot, :webhook_max_connections, 40)
+    url = host <> path
 
-    case Application.get_env(:todoist_bot, :use_webhook) do
-      "true" ->
-        host = Application.fetch_env!(:todoist_bot, :app_host)
-        path = Application.fetch_env!(:todoist_bot, :webhook_token)
-        max_connections = Application.get_env(:todoist_bot, :webhook_max_connections, 40)
-        url = host <> path
-        Nadia.set_webhook(url: url, max_connections: max_connections)
-
-      _ ->
-        {:error, :webhook_is_disabled}
+    with :ok <- API.set_webhook(url: url, max_connections: max_connections) do
+      :ignore
     end
   end
 

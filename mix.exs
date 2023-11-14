@@ -7,7 +7,8 @@ defmodule TodoistBot.MixProject do
       version: "1.0.4",
       elixir: "~> 1.9",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
 
@@ -18,6 +19,9 @@ defmodule TodoistBot.MixProject do
       mod: {TodoistBot.Application, []}
     ]
   end
+  
+  defp elixirc_paths(:test), do: ["test/support", "lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
@@ -26,7 +30,8 @@ defmodule TodoistBot.MixProject do
       {:nadia, git: "https://github.com/zhyu/nadia.git"},
       {:plug_cowboy, "~> 2.6"},
       {:plug, "~> 1.15"},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:mox, "~> 1.1", only: :test}
     ]
   end
 end

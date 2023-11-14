@@ -120,7 +120,7 @@ defmodule TodoistBotTest.Commands do
                [
                  %Nadia.Model.InlineKeyboardButton{
                    text: Strings.get_string(:authorization_request_button, "en"),
-                   url: "http://example.com/authorize?uuid=auth_state&language=en"
+                   url: "https://localhost/authorize?uuid=auth_state&language=en"
                  }
                ],
                [
@@ -214,7 +214,7 @@ defmodule TodoistBotTest.Commands do
                [
                  %Nadia.Model.InlineKeyboardButton{
                    text: Strings.get_string(:authorization_request_button, "en"),
-                   url: "http://example.com/authorize?uuid=auth_state&language=en"
+                   url: "https://localhost/authorize?uuid=auth_state&language=en"
                  }
                ],
                [
@@ -259,7 +259,7 @@ defmodule TodoistBotTest.Commands do
                [
                  %Nadia.Model.InlineKeyboardButton{
                    text: Strings.get_string(:authorization_request_button, "ru"),
-                   url: "http://example.com/authorize?uuid=auth_state&language=ru"
+                   url: "https://localhost/authorize?uuid=auth_state&language=ru"
                  }
                ],
                [

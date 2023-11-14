@@ -22,7 +22,7 @@ defmodule TodoistBotTest.Api do
     assert conn.resp_body == "You're being redirected..."
 
     assert get_resp_header(conn, "location") == [
-             "https://todoist.com/oauth/authorize?client_id=test&scope=task:add&state=666.test"
+             "https://todoist.com/oauth/authorize?client_id=secret_client_id&scope=task:add&state=666.test"
            ]
   end
 

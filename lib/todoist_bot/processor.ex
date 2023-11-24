@@ -13,7 +13,6 @@ defmodule TodoistBot.Processor do
       |> TodoistBot.Commands.match()
       |> save_user_state()
       |> send_response()
-      |> dbg()
     rescue
       error -> Logger.warning(inspect(error))
     end

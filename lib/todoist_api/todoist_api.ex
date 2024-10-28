@@ -29,11 +29,14 @@ defmodule TodoistApi do
       content: i.request.text
     }
 
-    case Req.post("https://api.todoist.com/rest/v2/tasks", json: body, auth: {:bearer, i.user.access_token}) do
-      {:ok, %{status_code: 200}} ->
+    case Req.post("https://api.todoist.com/rest/v2/tasks",
+           json: body,
+           auth: {:bearer, i.user.access_token}
+         ) do
+      {:ok, %{status: 200}} ->
         Interaction.put_resp_text(i, :task_added_text)
 
-      {:ok, %{status_code: 403} = resp} ->
+      {:ok, %{status: 403} = resp} ->
         Logger.error(
           "Could not add task for user #{i.user.telegram_id}. Response: #{inspect(resp)}"
         )

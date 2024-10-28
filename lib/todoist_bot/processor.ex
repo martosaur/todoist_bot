@@ -6,26 +6,17 @@ defmodule TodoistBot.Processor do
 
   def process_message(nil), do: Logger.error("Processor received nil")
 
-  # Nadia.Model.Update
-  def process_message(%{} = message) do
-    try do
-      message
-      |> Interaction.new()
-      |> TodoistBot.Storage.load_user()
-      |> TodoistBot.Commands.match()
-      |> save_user_state()
-      |> send_response()
-    rescue
-      error -> Logger.warning(inspect(error))
-    end
+  def process_message(%{} = update) do
+    update
+    |> Interaction.new()
+    |> TodoistBot.Storage.load_user()
+    |> TodoistBot.Commands.match()
+    |> save_user_state()
+    |> send_response()
   end
 
   def send_notification(%Interaction{} = i) do
-    try do
-      send_response(i)
-    rescue
-      error -> Logger.warning(inspect(error))
-    end
+    send_response(i)
   end
 
   def send_response(%Interaction{response: response}) do
@@ -48,7 +39,7 @@ defmodule TodoistBot.Processor do
 
   defp send_message(%Interaction.Response{} = response) do
     params =
-      Enum.reject(
+      Map.reject(
         %{
           chat_id: response.chat_id,
           text: response.text,
@@ -64,7 +55,7 @@ defmodule TodoistBot.Processor do
   defp answer_callback_query(%Interaction.Response{} = response) do
     Task.start(fn ->
       params =
-        Enum.reject(
+        Map.reject(
           %{
             callback_query_id: response.callback_query_id,
             text: response.answer_callback_query_text
@@ -86,7 +77,7 @@ defmodule TodoistBot.Processor do
 
   defp edit_message_text(%Interaction.Response{} = response) do
     params =
-      Enum.reject(
+      Map.reject(
         %{
           reply_markup: response.reply_markup,
           parse_mode: response.parse_mode

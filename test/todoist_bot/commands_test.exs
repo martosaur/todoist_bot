@@ -69,20 +69,20 @@ defmodule TodoistBotTest.Commands do
     assert i.response.type == :message
     assert i.response.chat_id == 111
 
-    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{
+    assert i.response.reply_markup == %{
              inline_keyboard: [
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:en, "en"),
                    callback_data: "/lan.en"
                  },
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:pl, "pl"),
                    callback_data: "/lan.pl"
                  }
                ],
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:ru, "ru"),
                    callback_data: "/lan.ru"
                  }
@@ -115,16 +115,16 @@ defmodule TodoistBotTest.Commands do
     assert i.response.type == :message
     assert i.response.chat_id == 111
 
-    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{
+    assert i.response.reply_markup == %{
              inline_keyboard: [
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:authorization_request_button, "en"),
                    url: "https://localhost/authorize?uuid=auth_state&language=en"
                  }
                ],
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:settings_button, "en"),
                    callback_data: "/unauthorized.settings"
                  }
@@ -156,26 +156,26 @@ defmodule TodoistBotTest.Commands do
     assert i.response.type == :edit_markup
     assert i.response.chat_id == 111
 
-    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{
+    assert i.response.reply_markup == %{
              inline_keyboard: [
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:back, "en"),
                    callback_data: "/unauthorized.back"
                  }
                ],
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:en, "en"),
                    callback_data: "/unauthorized.lan.en"
                  },
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:pl, "pl"),
                    callback_data: "/unauthorized.lan.pl"
                  }
                ],
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:ru, "ru"),
                    callback_data: "/unauthorized.lan.ru"
                  }
@@ -209,16 +209,16 @@ defmodule TodoistBotTest.Commands do
     assert i.response.type == :edit_markup
     assert i.response.chat_id == 111
 
-    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{
+    assert i.response.reply_markup == %{
              inline_keyboard: [
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:authorization_request_button, "en"),
                    url: "https://localhost/authorize?uuid=auth_state&language=en"
                  }
                ],
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:settings_button, "en"),
                    callback_data: "/unauthorized.settings"
                  }
@@ -254,16 +254,16 @@ defmodule TodoistBotTest.Commands do
     assert i.response.type == :edit_text
     assert i.response.chat_id == 111
 
-    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{
+    assert i.response.reply_markup == %{
              inline_keyboard: [
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:authorization_request_button, "ru"),
                    url: "https://localhost/authorize?uuid=auth_state&language=ru"
                  }
                ],
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:settings_button, "ru"),
                    callback_data: "/unauthorized.settings"
                  }
@@ -351,10 +351,10 @@ defmodule TodoistBotTest.Commands do
     assert i.response.type == :message
     assert i.response.chat_id == 111
 
-    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{
+    assert i.response.reply_markup == %{
              inline_keyboard: [
                [
-                 %Nadia.Model.InlineKeyboardButton{
+                 %{
                    text: Strings.get_string(:logout_confirm_yes_button, "en"),
                    callback_data: "/logout.confirm.yes"
                  }

@@ -19,19 +19,19 @@ defmodule TodoistBot.MixProject do
       mod: {TodoistBot.Application, []}
     ]
   end
-  
+
   defp elixirc_paths(:test), do: ["test/support", "lib"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 2.2.0", override: true},
-      {:nadia, git: "https://github.com/zhyu/nadia.git"},
       {:plug_cowboy, "~> 2.6"},
       {:plug, "~> 1.15"},
       {:jason, "~> 1.4"},
-      {:mox, "~> 1.1", only: :test}
+      {:mox, "~> 1.1", only: :test},
+      {:req, "~> 0.5.6"},
+      {:off_broadway_telegram, git: "https://github.com/martosaur/off_broadway_telegram.git"}
     ]
   end
 end

@@ -10,7 +10,8 @@ defmodule TodoistBot.Interaction.User do
             delete: false,
             raw: %{}
 
-  def new(%Nadia.Model.Update{callback_query: nil} = update) do
+  # Nadia.Model.Update
+  def new(%{callback_query: nil} = update) do
     %User{
       telegram_id: update.message.from.id,
       last_chat_id: update.message.chat.id,
@@ -18,7 +19,8 @@ defmodule TodoistBot.Interaction.User do
     }
   end
 
-  def new(%Nadia.Model.Update{message: nil} = update) do
+  # Nadia.Model.Update
+  def new(%{message: nil} = update) do
     %User{
       telegram_id: update.callback_query.from.id,
       last_chat_id: update.callback_query.message.chat.id,

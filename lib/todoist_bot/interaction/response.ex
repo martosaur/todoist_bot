@@ -10,13 +10,15 @@ defmodule TodoistBot.Interaction.Response do
             type: :none,
             parse_mode: nil
 
-  def new(%Nadia.Model.Update{callback_query: nil} = update) do
+  # Nadia.Model.Update
+  def new(%{callback_query: nil} = update) do
     %Response{
       chat_id: update.message.chat.id
     }
   end
 
-  def new(%Nadia.Model.Update{message: nil} = update) do
+  # Nadia.Model.Update
+  def new(%{message: nil} = update) do
     %Response{
       chat_id: update.callback_query.message.chat.id,
       callback_query_id: update.callback_query.id,

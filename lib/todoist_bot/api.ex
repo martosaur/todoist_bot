@@ -17,9 +17,7 @@ defmodule TodoistBot.Api do
     conn
     |> Plug.Conn.put_resp_header(
       "location",
-      "https://todoist.com/oauth/authorize?client_id=#{app_client_id}&scope=#{@scope}&state=#{
-        state
-      }"
+      "https://todoist.com/oauth/authorize?client_id=#{app_client_id}&scope=#{@scope}&state=#{state}"
     )
     |> Plug.Conn.send_resp(301, TodoistBot.Strings.get_string(:redirecting_web, language))
   end

@@ -12,12 +12,11 @@ defmodule TodoistBot.Application do
     opts = [strategy: :one_for_one, name: TodoistBot.Supervisor]
     Supervisor.start_link(children(router), opts)
   end
-  
+
   if Mix.env() == :test do
     def children(router) do
       [router]
     end
-    
   else
     def children(router) do
       poller_or_webhook =
@@ -28,9 +27,9 @@ defmodule TodoistBot.Application do
             restart: :transient
           }
         else
-          TodoistBot.Poller
+          {TodoistBot.Poller, [Application.fetch_env!(:todoist_bot, :bot_token)]}
         end
-      
+
       [
         %{
           id: WebhookCleanup,

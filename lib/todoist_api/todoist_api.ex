@@ -1,6 +1,5 @@
 defmodule TodoistApi do
   alias TodoistBot.Interaction
-  use HTTPoison.Base
   require Logger
 
   def refresh_access_token_if_needed(%Interaction{user: %Interaction.User{access_token: ""}} = i) do
@@ -54,6 +53,8 @@ defmodule TodoistApi do
         Interaction.put_resp_text(i, :add_task_error_text)
     end
   end
+
+  defp post(_, _, _), do: :ok
 
   defp get_headers(%Interaction{} = i) do
     [

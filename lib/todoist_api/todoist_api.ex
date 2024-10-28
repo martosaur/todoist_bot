@@ -9,9 +9,8 @@ defmodule TodoistApi do
       code: i.user.auth_code
     }
 
-    case post("https://todoist.com/oauth/access_token", body, []) do
-      {:ok, %{status_code: 200, body: body}} ->
-        %{"access_token" => token} = Jason.decode!(body)
+    case Req.post("https://todoist.com/oauth/access_token", json: body) do
+      {:ok, %{status: 200, body: %{"access_token" => token}}} ->
         Interaction.put_user_state(i, access_token: token)
 
       error ->
@@ -30,7 +29,7 @@ defmodule TodoistApi do
       content: i.request.text
     }
 
-    case post("https://api.todoist.com/rest/v2/tasks", body, get_headers(i)) do
+    case Req.post("https://api.todoist.com/rest/v2/tasks", json: body, auth: {:bearer, i.user.access_token}) do
       {:ok, %{status_code: 200}} ->
         Interaction.put_resp_text(i, :task_added_text)
 
@@ -52,22 +51,5 @@ defmodule TodoistApi do
 
         Interaction.put_resp_text(i, :add_task_error_text)
     end
-  end
-
-  defp post(_, _, _), do: :ok
-
-  defp get_headers(%Interaction{} = i) do
-    [
-      {"Authorization", "Bearer #{i.user.access_token}"}
-    ]
-  end
-
-  def process_request_body(body) do
-    body
-    |> Jason.encode!()
-  end
-
-  def process_request_headers(headers) do
-    [{"Content-Type", "application/json"} | headers]
   end
 end

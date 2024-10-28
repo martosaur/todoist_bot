@@ -1,11 +1,13 @@
 defmodule TodoistBot.Processor do
   alias TodoistBot.Storage
   alias TodoistBot.Interaction
+  alias TodoistBot.Telegram.API
   require Logger
 
   def process_message(nil), do: Logger.error("Processor received nil")
 
-  def process_message(%Nadia.Model.Update{} = message) do
+  # Nadia.Model.Update
+  def process_message(%{} = message) do
     try do
       message
       |> Interaction.new()
@@ -45,35 +47,55 @@ defmodule TodoistBot.Processor do
   end
 
   defp send_message(%Interaction.Response{} = response) do
-    options =
-      [reply_markup: response.reply_markup, parse_mode: response.parse_mode]
-      |> Enum.reject(fn {_, v} -> v == nil end)
+    params =
+      Enum.reject(
+        %{
+          chat_id: response.chat_id,
+          text: response.text,
+          reply_markup: response.reply_markup,
+          parse_mode: response.parse_mode
+        },
+        fn {_, v} -> v == nil end
+      )
 
-    Nadia.send_message(response.chat_id, response.text, options)
+    API.request("sendMessage", params)
   end
 
   defp answer_callback_query(%Interaction.Response{} = response) do
-    options =
-      [text: response.answer_callback_query_text]
-      |> Enum.reject(fn {_, v} -> v == nil end)
+    Task.start(fn ->
+      params =
+        Enum.reject(
+          %{
+            callback_query_id: response.callback_query_id,
+            text: response.answer_callback_query_text
+          },
+          fn {_, v} -> v == nil end
+        )
 
-    Task.start(fn -> Nadia.answer_callback_query(response.callback_query_id, options) end)
+      API.request("answer_callback_query", params)
+    end)
   end
 
   defp edit_message_reply_markup(%Interaction.Response{} = response) do
-    options =
-      [reply_markup: response.reply_markup]
-      |> Enum.reject(fn {_, v} -> v == nil end)
+    API.request("editMessageReplyMarkup", %{
+      reply_markup: response.reply_markup
+    })
 
-    Nadia.edit_message_reply_markup(response.chat_id, response.message_id, "", options)
+    :ok
   end
 
   defp edit_message_text(%Interaction.Response{} = response) do
-    options =
-      [reply_markup: response.reply_markup, parse_mode: response.parse_mode]
-      |> Enum.reject(fn {_, v} -> v == nil end)
+    params =
+      Enum.reject(
+        %{
+          reply_markup: response.reply_markup,
+          parse_mode: response.parse_mode
+        },
+        fn {_, v} -> v == nil end
+      )
 
-    Nadia.edit_message_text(response.chat_id, response.message_id, "", response.text, options)
+    API.request("editMessageText", params)
+    :ok
   end
 
   defp save_user_state(%Interaction{} = i) do

@@ -4,7 +4,8 @@ defmodule TodoistBot.Interaction do
 
   defstruct request: nil, response: nil, user: nil
 
-  def new(%Nadia.Model.Update{} = update) do
+  # Nadia.Model.Update
+  def new(%{} = update) do
     %Interaction{
       request: TodoistBot.Interaction.Request.new(update),
       response: TodoistBot.Interaction.Response.new(update),
@@ -86,7 +87,8 @@ defmodule TodoistBot.Interaction do
   end
 
   def add_resp_inline_keyboard(%Interaction{} = i) do
-    put_in(i.response.reply_markup, %Nadia.Model.InlineKeyboardMarkup{inline_keyboard: []})
+    # Nadia.Model.InlineKeyboardMarkup
+    put_in(i.response.reply_markup, %{inline_keyboard: []})
   end
 
   def add_resp_inline_keyboard_row(%Interaction{} = i) do
@@ -99,7 +101,8 @@ defmodule TodoistBot.Interaction do
     keyboard = i.response.reply_markup.inline_keyboard
     row = i.response.reply_markup.inline_keyboard |> List.last()
     text = Strings.get_string(string_id, i.user.language)
-    button = %Nadia.Model.InlineKeyboardButton{text: text, url: link}
+    # Nadia.Model.InlineKeyboardButton
+    button = %{text: text, url: link}
 
     put_in(
       i.response.reply_markup.inline_keyboard,
@@ -111,7 +114,8 @@ defmodule TodoistBot.Interaction do
     keyboard = i.response.reply_markup.inline_keyboard
     row = i.response.reply_markup.inline_keyboard |> List.last()
     text = Strings.get_string(string_id, i.user.language)
-    button = %Nadia.Model.InlineKeyboardButton{text: text, callback_data: callback_data}
+    # Nadia.Model.InlineKeyboardButton
+    button = %{text: text, callback_data: callback_data}
 
     put_in(
       i.response.reply_markup.inline_keyboard,

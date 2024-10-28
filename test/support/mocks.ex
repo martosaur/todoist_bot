@@ -1,1 +1,1 @@
-Mox.defmock(TodoistBot.Nadia.API.Mock, for: TodoistBot.Nadia.API)
+Mox.defmock(TodoistBot.Telegram.API.Mock, for: TodoistBot.Telegram.API)

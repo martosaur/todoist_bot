@@ -1,7 +1,8 @@
 import Config
 
 config :todoist_bot,
-  nadia_adapter: TodoistBot.Nadia.API.Mock,
+  bot_token: "mytoken",
+  telegram_adapter: TodoistBot.Telegram.API.Mock,
   app_port: 9009,
   use_webhook: "true",
   app_host: "https://localhost/",

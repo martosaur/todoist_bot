@@ -1,6 +1,6 @@
 import Config
 
-config :nadia, token: System.fetch_env!("NADIA_BOT_TOKEN")
+config :nadia, token: System.fetch_env!("BOT_TOKEN")
 
 config :todoist_bot,
   app_port: System.fetch_env!("APP_PORT") |> String.to_integer(),

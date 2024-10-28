@@ -3,71 +3,71 @@ defmodule TodoistBotTest.Interaction do
   alias TodoistBot.Interaction
 
   test "new: create interaction from callback query" do
-    update = %Nadia.Model.Update{
-      callback_query: %Nadia.Model.CallbackQuery{
-        data: "/lan.en",
-        from: %Nadia.Model.User{
-          first_name: "abc",
-          id: 123,
-          last_name: "abc",
-          username: "abc"
+    update = %{
+      "callback_query" => %{
+        "data" => "/lan.en",
+        "from" => %{
+          "first_name" => "abc",
+          "id" => 123,
+          "last_name" => "abc",
+          "username" => "abc"
         },
-        id: "456",
-        inline_message_id: nil,
-        message: %Nadia.Model.Message{
-          audio: nil,
-          caption: nil,
-          channel_chat_created: nil,
-          chat: %Nadia.Model.Chat{
-            first_name: "abc",
-            id: 789,
-            last_name: "abc",
-            photo: nil,
-            title: nil,
-            type: "private",
-            username: "abc"
+        "id" => "456",
+        "inline_message_id" => nil,
+        "message" => %{
+          "audio" => nil,
+          "caption" => nil,
+          "channel_chat_created" => nil,
+          "chat" => %{
+            "first_name" => "abc",
+            "id" => 789,
+            "last_name" => "abc",
+            "photo" => nil,
+            "title" => nil,
+            "type" => "private",
+            "username" => "abc"
           },
-          contact: nil,
-          date: 1_526_201_003,
-          delete_chat_photo: nil,
-          document: nil,
-          edit_date: nil,
-          entities: nil,
-          forward_date: nil,
-          forward_from: nil,
-          forward_from_chat: nil,
-          from: %Nadia.Model.User{
-            first_name: "bot",
-            id: 012,
-            last_name: nil,
-            username: "bot"
+          "contact" => nil,
+          "date" => 1_526_201_003,
+          "delete_chat_photo" => nil,
+          "document" => nil,
+          "edit_date" => nil,
+          "entities" => nil,
+          "forward_date" => nil,
+          "forward_from" => nil,
+          "forward_from_chat" => nil,
+          "from" => %{
+            "first_name" => "bot",
+            "id" => 012,
+            "last_name" => nil,
+            "username" => "bot"
           },
-          group_chat_created: nil,
-          left_chat_member: nil,
-          location: nil,
-          message_id: 666,
-          migrate_from_chat_id: nil,
-          migrate_to_chat_id: nil,
-          new_chat_member: nil,
-          new_chat_photo: [],
-          new_chat_title: nil,
-          photo: [],
-          pinned_message: nil,
-          reply_to_message: nil,
-          sticker: nil,
-          supergroup_chat_created: nil,
-          text: "Language settings",
-          venue: nil,
-          video: nil,
-          voice: nil
+          "group_chat_created" => nil,
+          "left_chat_member" => nil,
+          "location" => nil,
+          "message_id" => 666,
+          "migrate_from_chat_id" => nil,
+          "migrate_to_chat_id" => nil,
+          "new_chat_member" => nil,
+          "new_chat_photo" => [],
+          "new_chat_title" => nil,
+          "photo" => [],
+          "pinned_message" => nil,
+          "reply_to_message" => nil,
+          "sticker" => nil,
+          "supergroup_chat_created" => nil,
+          "text" => "Language settings",
+          "venue" => nil,
+          "video" => nil,
+          "voice" => nil
         }
       },
-      channel_post: nil,
-      chosen_inline_result: nil,
-      edited_message: nil,
-      inline_query: nil,
-      message: nil,
-      update_id: 9_999_999
+      "channel_post" => nil,
+      "chosen_inline_result" => nil,
+      "edited_message" => nil,
+      "inline_query" => nil,
+      "message" => nil,
+      "update_id" => 9_999_999
     }
 
     i = Interaction.new(update)
@@ -86,69 +86,69 @@ defmodule TodoistBotTest.Interaction do
     assert i.user.telegram_id == 123
     assert i.user.last_chat_id == 789
 
-    assert i.user.raw == %Nadia.Model.User{
-             first_name: "abc",
-             id: 123,
-             last_name: "abc",
-             username: "abc"
+    assert i.user.raw == %{
+             "first_name" => "abc",
+             "id" => 123,
+             "last_name" => "abc",
+             "username" => "abc"
            }
   end
 
   test "new: create interaction from regular message" do
-    update = %Nadia.Model.Update{
-      callback_query: nil,
-      channel_post: nil,
-      chosen_inline_result: nil,
-      edited_message: nil,
-      inline_query: nil,
-      message: %Nadia.Model.Message{
-        audio: nil,
-        caption: nil,
-        channel_chat_created: nil,
-        chat: %Nadia.Model.Chat{
-          first_name: "abc",
-          id: 111,
-          last_name: "abc",
-          photo: nil,
-          title: nil,
-          type: "private",
-          username: "abc"
+    update = %{
+      "callback_query" => nil,
+      "channel_post" => nil,
+      "chosen_inline_result" => nil,
+      "edited_message" => nil,
+      "inline_query" => nil,
+      "message" => %{
+        "audio" => nil,
+        "caption" => nil,
+        "channel_chat_created" => nil,
+        "chat" => %{
+          "first_name" => "abc",
+          "id" => 111,
+          "last_name" => "abc",
+          "photo" => nil,
+          "title" => nil,
+          "type" => "private",
+          "username" => "abc"
         },
-        contact: nil,
-        date: 1_526_201_003,
-        delete_chat_photo: nil,
-        document: nil,
-        edit_date: nil,
-        entities: [%{length: 9, offset: 0, type: "bot_command"}],
-        forward_date: nil,
-        forward_from: nil,
-        forward_from_chat: nil,
-        from: %Nadia.Model.User{
-          first_name: "abc",
-          id: 222,
-          last_name: "abc",
-          username: "abc"
+        "contact" => nil,
+        "date" => 1_526_201_003,
+        "delete_chat_photo" => nil,
+        "document" => nil,
+        "edit_date" => nil,
+        "entities" => [%{"length" => 9, "offset" => 0, "type" => "bot_command"}],
+        "forward_date" => nil,
+        "forward_from" => nil,
+        "forward_from_chat" => nil,
+        "from" => %{
+          "first_name" => "abc",
+          "id" => 222,
+          "last_name" => "abc",
+          "username" => "abc"
         },
-        group_chat_created: nil,
-        left_chat_member: nil,
-        location: nil,
-        message_id: 333,
-        migrate_from_chat_id: nil,
-        migrate_to_chat_id: nil,
-        new_chat_member: nil,
-        new_chat_photo: [],
-        new_chat_title: nil,
-        photo: [],
-        pinned_message: nil,
-        reply_to_message: nil,
-        sticker: nil,
-        supergroup_chat_created: nil,
-        text: "/settings",
-        venue: nil,
-        video: nil,
-        voice: nil
+        "group_chat_created" => nil,
+        "left_chat_member" => nil,
+        "location" => nil,
+        "message_id" => 333,
+        "migrate_from_chat_id" => nil,
+        "migrate_to_chat_id" => nil,
+        "new_chat_member" => nil,
+        "new_chat_photo" => [],
+        "new_chat_title" => nil,
+        "photo" => [],
+        "pinned_message" => nil,
+        "reply_to_message" => nil,
+        "sticker" => nil,
+        "supergroup_chat_created" => nil,
+        "text" => "/settings",
+        "venue" => nil,
+        "video" => nil,
+        "voice" => nil
       },
-      update_id: 444
+      "update_id" => 444
     }
 
     i = Interaction.new(update)
@@ -167,11 +167,11 @@ defmodule TodoistBotTest.Interaction do
     assert i.user.telegram_id == 222
     assert i.user.last_chat_id == 111
 
-    assert i.user.raw == %Nadia.Model.User{
-             first_name: "abc",
-             id: 222,
-             last_name: "abc",
-             username: "abc"
+    assert i.user.raw == %{
+             "first_name" => "abc",
+             "id" => 222,
+             "last_name" => "abc",
+             "username" => "abc"
            }
   end
 
@@ -349,19 +349,18 @@ defmodule TodoistBotTest.Interaction do
   test "put_resp_inline_keyboard" do
     i =
       %Interaction{
-        response: %Interaction.Response{}
+        response: %Interaction.Response{reply_markup: nil}
       }
       |> Interaction.add_resp_inline_keyboard()
 
-    assert i.response.reply_markup == %Nadia.Model.InlineKeyboardMarkup{}
-    assert i.response.reply_markup.inline_keyboard == []
+    assert %{inline_keyboard: []} = i.response.reply_markup
   end
 
   test "put_resp_inline_keyboard_row" do
     i =
       %Interaction{
         response: %Interaction.Response{
-          reply_markup: %Nadia.Model.InlineKeyboardMarkup{}
+          reply_markup: %{inline_keyboard: []}
         }
       }
       |> Interaction.add_resp_inline_keyboard_row()
@@ -377,7 +376,7 @@ defmodule TodoistBotTest.Interaction do
     i =
       %Interaction{
         response: %Interaction.Response{
-          reply_markup: %Nadia.Model.InlineKeyboardMarkup{
+          reply_markup: %{
             inline_keyboard: [[], []]
           }
         },
@@ -387,7 +386,7 @@ defmodule TodoistBotTest.Interaction do
 
     assert i.response.reply_markup.inline_keyboard == [
              [],
-             [%Nadia.Model.InlineKeyboardButton{text: "default_test", url: "https://example.com"}]
+             [%{text: "default_test", url: "https://example.com"}]
            ]
   end
 
@@ -395,7 +394,7 @@ defmodule TodoistBotTest.Interaction do
     i =
       %Interaction{
         response: %Interaction.Response{
-          reply_markup: %Nadia.Model.InlineKeyboardMarkup{
+          reply_markup: %{
             inline_keyboard: [[], []]
           }
         },
@@ -405,7 +404,7 @@ defmodule TodoistBotTest.Interaction do
 
     assert i.response.reply_markup.inline_keyboard == [
              [],
-             [%Nadia.Model.InlineKeyboardButton{text: "default_test", callback_data: "data"}]
+             [%{text: "default_test", callback_data: "data"}]
            ]
   end
 

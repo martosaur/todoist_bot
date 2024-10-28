@@ -25,8 +25,7 @@ defmodule TodoistBot.Poller do
         _context
       ) do
     IO.inspect(update)
-
-    # TodoistBot.Processor.process_message([update])
+    TodoistBot.Processor.process_message(update)
 
     message
   end

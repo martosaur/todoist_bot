@@ -10,21 +10,19 @@ defmodule TodoistBot.Interaction.User do
             delete: false,
             raw: %{}
 
-  # Nadia.Model.Update
-  def new(%{callback_query: nil} = update) do
+  def new(%{"callback_query" => %{}} = update) do
     %User{
-      telegram_id: update.message.from.id,
-      last_chat_id: update.message.chat.id,
-      raw: update.message.from
+      telegram_id: get_in(update, ["callback_query", "from", "id"]),
+      last_chat_id: get_in(update, ["callback_query", "message", "chat", "id"]),
+      raw: get_in(update["callback_query"]["from"])
     }
   end
 
-  # Nadia.Model.Update
-  def new(%{message: nil} = update) do
+  def new(update) do
     %User{
-      telegram_id: update.callback_query.from.id,
-      last_chat_id: update.callback_query.message.chat.id,
-      raw: update.callback_query.from
+      telegram_id: get_in(update, ["message", "from", "id"]),
+      last_chat_id: get_in(update, ["message", "chat", "id"]),
+      raw: get_in(update["message"]["from"])
     }
   end
 

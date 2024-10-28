@@ -74,7 +74,7 @@ defmodule TodoistBot.Storage do
     end
   end
 
-  defp get_user(telegram_id) do
+  def get_user(telegram_id) do
     with_dets storage() do
       case :dets.lookup(storage(), telegram_id) do
         [{^telegram_id, user}] -> user
@@ -83,7 +83,7 @@ defmodule TodoistBot.Storage do
     end
   end
 
-  defp save_or_insert_user(%{telegram_id: telegram_id} = user) do
+  def save_or_insert_user(%{telegram_id: telegram_id} = user) do
     with_dets storage() do
       user_for_insertion =
         case get_user(telegram_id) do

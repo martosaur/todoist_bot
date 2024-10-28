@@ -10,19 +10,17 @@ defmodule TodoistBot.Interaction.Response do
             type: :none,
             parse_mode: nil
 
-  # Nadia.Model.Update
-  def new(%{callback_query: nil} = update) do
+  def new(%{"callback_query" => %{}} = update) do
     %Response{
-      chat_id: update.message.chat.id
+      chat_id: get_in(update, ["callback_query", "message", "chat", "id"]),
+      callback_query_id: get_in(update, ["callback_query", "id"]),
+      message_id: get_in(update, ["callback_query", "message", "message_id"])
     }
   end
 
-  # Nadia.Model.Update
-  def new(%{message: nil} = update) do
+  def new(update) do
     %Response{
-      chat_id: update.callback_query.message.chat.id,
-      callback_query_id: update.callback_query.id,
-      message_id: update.callback_query.message.message_id
+      chat_id: get_in(update, ["message", "chat", "id"])
     }
   end
 end

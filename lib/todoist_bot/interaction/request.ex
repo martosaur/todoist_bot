@@ -3,21 +3,19 @@ defmodule TodoistBot.Interaction.Request do
 
   defstruct raw: nil, chat_id: nil, text: "", callback: ""
 
-  # Nadia.Model.Update
-  def new(%{callback_query: nil} = update) do
+  def new(%{"callback_query" => %{}} = update) do
     %Request{
       raw: update,
-      chat_id: update.message.chat.id,
-      text: update.message.text || update.message.caption || ""
+      chat_id: get_in(update, ["callback_query", "message", "chat", "id"]),
+      callback: get_in(update["callback_query"]["data"])
     }
   end
 
-  # Nadia.Model.Update
-  def new(%{message: nil} = update) do
+  def new(update) do
     %Request{
       raw: update,
-      chat_id: update.callback_query.message.chat.id,
-      callback: update.callback_query.data
+      chat_id: get_in(update, ["message", "chat", "id"]),
+      text: get_in(update["message"]["text"]) || get_in(update["message"]["caption"]) || ""
     }
   end
 end

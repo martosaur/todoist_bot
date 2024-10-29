@@ -1,9 +1,7 @@
 import Config
 
 if config_env() == :prod do
-  config :todoist_bot, TodoistBot.Repo,
-    database: System.fetch_env!("DB_PATH"),
-    busy_timeout: 10_000
+  config :todoist_bot, TodoistBot.Repo, database: System.fetch_env!("DB_PATH")
 
   config :todoist_bot,
     bot_token: System.fetch_env!("BOT_TOKEN"),

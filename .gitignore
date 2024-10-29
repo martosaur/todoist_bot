@@ -28,3 +28,6 @@ todoist_bot-*.tar
 *.storage
 
 config/dev.exs
+
+*.db
+*.db-*

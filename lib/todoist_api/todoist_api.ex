@@ -2,7 +2,7 @@ defmodule TodoistApi do
   alias TodoistBot.Interaction
   require Logger
 
-  def refresh_access_token_if_needed(%Interaction{user: %Interaction.User{access_token: ""}} = i) do
+  def refresh_access_token_if_needed(%Interaction{user: %Interaction.User{access_token: nil}} = i) do
     body = %{
       client_id: Application.fetch_env!(:todoist_bot, :todoist_app_client_id),
       client_secret: Application.fetch_env!(:todoist_bot, :todoist_app_client_secret),

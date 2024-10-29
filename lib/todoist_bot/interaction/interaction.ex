@@ -22,7 +22,7 @@ defmodule TodoistBot.Interaction do
   end
 
   def authorized?(%Interaction{} = i) do
-    i.user.auth_code != ""
+    i.user.auth_code != nil
   end
 
   def has_text?(%Interaction{} = i) do

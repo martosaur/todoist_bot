@@ -9,6 +9,8 @@ defmodule TodoistBot.Application do
         options: [port: Application.fetch_env!(:todoist_bot, :app_port)]
       )
 
+    TodoistBot.Release.migrate()
+
     opts = [strategy: :one_for_one, name: TodoistBot.Supervisor]
     Supervisor.start_link([TodoistBot.Repo] ++ children() ++ [router], opts)
   end

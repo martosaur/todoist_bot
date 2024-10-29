@@ -1,5 +1,9 @@
 import Config
 
+config :todoist_bot, TodoistBot.Repo,
+  pool_size: 5,
+  pool: Ecto.Adapters.SQL.Sandbox
+
 config :todoist_bot,
   bot_token: "mytoken",
   telegram_adapter: TodoistBot.Telegram.API.Mock,

@@ -1,14 +1,35 @@
 defmodule TodoistBot.Interaction.User do
+  use Ecto.Schema
+  import Ecto.Changeset
+
   alias __MODULE__
 
-  defstruct telegram_id: nil,
-            last_chat_id: nil,
-            auth_code: "",
-            auth_state: "",
-            access_token: "",
-            language: "en",
-            delete: false,
-            raw: %{}
+  @primary_key {:telegram_id, :id, autogenerate: false}
+  schema "users" do
+    field(:last_chat_id, :integer)
+    field(:auth_code, :string)
+    field(:auth_state, :string)
+    field(:access_token, :string)
+    field(:delete, :boolean, default: false)
+    field(:raw, :map, default: %{})
+    field(:language, :string, default: "en", virtual: true)
+
+    timestamps(type: :utc_datetime)
+  end
+
+  def changeset(user, attrs) do
+    user
+    |> cast(attrs, [
+      :telegram_id,
+      :last_chat_id,
+      :auth_code,
+      :auth_state,
+      :access_token,
+      :delete,
+      :raw
+    ])
+    |> validate_required([:telegram_id])
+  end
 
   def new(%{"callback_query" => %{}} = update) do
     %User{

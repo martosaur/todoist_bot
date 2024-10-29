@@ -1,19 +1,8 @@
 defmodule TodoistBot.Storage do
   alias TodoistBot.Interaction
+  alias TodoistBot.Repo
+  alias TodoistBot.Interaction.User
   require Logger
-
-  def storage do
-    Application.fetch_env!(:todoist_bot, :dets_file) |> String.to_atom()
-  end
-
-  defmacro with_dets(filename, do: block) do
-    quote do
-      {:ok, _} = :dets.open_file(unquote(filename), type: :set)
-      result = unquote(block)
-      :dets.close(unquote(filename))
-      result
-    end
-  end
 
   def save_user(%Interaction{} = i) do
     {:ok, user} = save_or_insert_user(i.user)
@@ -31,15 +20,13 @@ defmodule TodoistBot.Storage do
   end
 
   def delete_user(%Interaction{user: user} = i) do
-    with_dets storage() do
-      case :dets.delete(storage(), user.telegram_id) do
-        :ok ->
-          i
+    case Repo.delete(user) do
+      :ok ->
+        i
 
-        {:error, u} ->
-          Logger.error("Could not delete user #{inspect(u)}")
-          i
-      end
+      {:error, u} ->
+        Logger.error("Could not delete user #{inspect(u)}")
+        i
     end
   end
 
@@ -60,7 +47,7 @@ defmodule TodoistBot.Storage do
 
       user ->
         user
-        |> Map.put(:auth_code, auth_code)
+        |> User.changeset(%{auth_code: auth_code})
         |> save_or_insert_user()
         |> case do
           {:ok, user} ->
@@ -74,33 +61,9 @@ defmodule TodoistBot.Storage do
     end
   end
 
-  def get_user(telegram_id) do
-    with_dets storage() do
-      case :dets.lookup(storage(), telegram_id) do
-        [{^telegram_id, user}] -> user
-        _ -> nil
-      end
-    end
-  end
+  def get_user(telegram_id), do: Repo.get(User, telegram_id)
 
-  def save_or_insert_user(%{telegram_id: telegram_id} = user) do
-    with_dets storage() do
-      user_for_insertion =
-        case get_user(telegram_id) do
-          nil ->
-            user
-
-          existing_user ->
-            Map.merge(existing_user, user)
-        end
-
-      case :dets.insert(storage(), {telegram_id, user_for_insertion}) do
-        :ok ->
-          {:ok, user_for_insertion}
-
-        error ->
-          error
-      end
-    end
+  def save_or_insert_user(user) do
+    Repo.insert(user, on_conflict: :replace_all, conflict_target: :telegram_id)
   end
 end

@@ -1,5 +1,5 @@
 defmodule TodoistBotTest.Commands do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   alias TodoistBot.Interaction
   alias TodoistBot.Commands
   alias TodoistBot.Strings

@@ -1,5 +1,5 @@
 defmodule TodoistBotTest.Interaction do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   alias TodoistBot.Interaction
 
   test "new: create interaction from callback query" do
@@ -191,7 +191,7 @@ defmodule TodoistBotTest.Interaction do
     b =
       %Interaction{
         user: %Interaction.User{
-          auth_code: ""
+          auth_code: nil
         }
       }
       |> Interaction.authorized?()

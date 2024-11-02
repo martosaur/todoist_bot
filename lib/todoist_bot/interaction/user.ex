@@ -12,7 +12,6 @@ defmodule TodoistBot.Interaction.User do
     field(:access_token, :string)
     field(:delete, :boolean, default: false)
     field(:raw, :map, default: %{})
-    field(:language, :string, default: "en", virtual: true)
 
     timestamps(type: :utc_datetime)
   end

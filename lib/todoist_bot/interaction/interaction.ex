@@ -1,6 +1,5 @@
 defmodule TodoistBot.Interaction do
   alias __MODULE__
-  alias TodoistBot.Strings
 
   defstruct request: nil, response: nil, user: nil
 
@@ -12,12 +11,12 @@ defmodule TodoistBot.Interaction do
     }
   end
 
-  def notification(chat_id, string_id, language) do
+  def notification(chat_id, text) do
     %Interaction{
       response: %TodoistBot.Interaction.Response{chat_id: chat_id},
-      user: %TodoistBot.Interaction.User{language: language}
+      user: %TodoistBot.Interaction.User{}
     }
-    |> put_resp_text(string_id)
+    |> put_resp_text(text)
     |> put_resp_type_message()
   end
 
@@ -55,13 +54,11 @@ defmodule TodoistBot.Interaction do
     put_in(i.user, user)
   end
 
-  def put_resp_text(%Interaction{} = i, string_id) do
-    text = Strings.get_string(string_id, i.user.language)
+  def put_resp_text(%Interaction{} = i, text) do
     put_in(i.response.text, text)
   end
 
-  def put_resp_answer_callback_text(%Interaction{} = i, string_id) do
-    text = Strings.get_string(string_id, i.user.language)
+  def put_resp_answer_callback_text(%Interaction{} = i, text) do
     put_in(i.response.answer_callback_query_text, text)
   end
 
@@ -95,10 +92,9 @@ defmodule TodoistBot.Interaction do
     put_in(i.response.reply_markup.inline_keyboard, keyboard ++ [[]])
   end
 
-  def add_resp_inline_keyboard_link_button(%Interaction{} = i, string_id, link) do
+  def add_resp_inline_keyboard_link_button(%Interaction{} = i, text, link) do
     keyboard = i.response.reply_markup.inline_keyboard
     row = i.response.reply_markup.inline_keyboard |> List.last()
-    text = Strings.get_string(string_id, i.user.language)
     button = %{text: text, url: link}
 
     put_in(
@@ -107,10 +103,9 @@ defmodule TodoistBot.Interaction do
     )
   end
 
-  def add_resp_inline_keyboard_callback_button(%Interaction{} = i, string_id, callback_data) do
+  def add_resp_inline_keyboard_callback_button(%Interaction{} = i, text, callback_data) do
     keyboard = i.response.reply_markup.inline_keyboard
     row = i.response.reply_markup.inline_keyboard |> List.last()
-    text = Strings.get_string(string_id, i.user.language)
     button = %{text: text, callback_data: callback_data}
 
     put_in(

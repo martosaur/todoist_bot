@@ -21,7 +21,7 @@ defmodule TodoistBot.Storage do
 
   def delete_user(%Interaction{user: user} = i) do
     case Repo.delete(user) do
-      :ok ->
+      {:ok, _} ->
         i
 
       {:error, u} ->
@@ -51,7 +51,7 @@ defmodule TodoistBot.Storage do
         |> save_or_insert_user()
         |> case do
           {:ok, user} ->
-            {:ok, user.last_chat_id, user.language}
+            {:ok, user.last_chat_id}
 
           {:error, u} ->
             Logger.error("Could not save user #{inspect(u)}")

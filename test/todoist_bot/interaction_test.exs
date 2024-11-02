@@ -258,14 +258,12 @@ defmodule TodoistBotTest.Interaction do
       |> Interaction.put_user_state(
         telegram_id: 222,
         last_chat_id: 333,
-        language: "zh",
         auth_code: "code",
         access_token: "token"
       )
 
     assert i.user.telegram_id == 222
     assert i.user.last_chat_id == 333
-    assert i.user.language == "zh"
     assert i.user.auth_code == "code"
     assert i.user.access_token == "token"
   end
@@ -288,13 +286,11 @@ defmodule TodoistBotTest.Interaction do
         response: %Interaction.Response{
           text: "test"
         },
-        user: %Interaction.User{
-          language: "ru"
-        }
+        user: %Interaction.User{}
       }
-      |> Interaction.put_resp_text(:test)
+      |> Interaction.put_resp_text("test")
 
-    assert i.response.text == "тест"
+    assert i.response.text == "test"
   end
 
   test "put_resp_answer_callback_text" do
@@ -303,13 +299,11 @@ defmodule TodoistBotTest.Interaction do
         response: %Interaction.Response{
           answer_callback_query_text: "test"
         },
-        user: %Interaction.User{
-          language: "pl"
-        }
+        user: %Interaction.User{}
       }
-      |> Interaction.put_resp_answer_callback_text(:test)
+      |> Interaction.put_resp_answer_callback_text("test text")
 
-    assert i.response.answer_callback_query_text == "default_test"
+    assert i.response.answer_callback_query_text == "test text"
   end
 
   test "put_resp_type_*" do
@@ -382,11 +376,11 @@ defmodule TodoistBotTest.Interaction do
         },
         user: %Interaction.User{}
       }
-      |> Interaction.add_resp_inline_keyboard_link_button(:test, "https://example.com")
+      |> Interaction.add_resp_inline_keyboard_link_button("test text", "https://example.com")
 
     assert i.response.reply_markup.inline_keyboard == [
              [],
-             [%{text: "default_test", url: "https://example.com"}]
+             [%{text: "test text", url: "https://example.com"}]
            ]
   end
 
@@ -400,11 +394,11 @@ defmodule TodoistBotTest.Interaction do
         },
         user: %Interaction.User{}
       }
-      |> Interaction.add_resp_inline_keyboard_callback_button(:test, "data")
+      |> Interaction.add_resp_inline_keyboard_callback_button("test_text", "data")
 
     assert i.response.reply_markup.inline_keyboard == [
              [],
-             [%{text: "default_test", callback_data: "data"}]
+             [%{text: "test_text", callback_data: "data"}]
            ]
   end
 

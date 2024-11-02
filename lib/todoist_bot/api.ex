@@ -11,7 +11,6 @@ defmodule TodoistBot.Api do
     conn = Plug.Conn.fetch_query_params(conn)
 
     state = conn.query_params["uuid"]
-    language = conn.query_params["language"] || "en"
     app_client_id = Application.fetch_env!(:todoist_bot, :todoist_app_client_id)
 
     conn
@@ -19,7 +18,7 @@ defmodule TodoistBot.Api do
       "location",
       "https://todoist.com/oauth/authorize?client_id=#{app_client_id}&scope=#{@scope}&state=#{state}"
     )
-    |> Plug.Conn.send_resp(301, TodoistBot.Strings.get_string(:redirecting_web, language))
+    |> Plug.Conn.send_resp(301, "You're being redirected...")
   end
 
   get "/authorization/finish" do
@@ -28,18 +27,20 @@ defmodule TodoistBot.Api do
     with nil <- conn.query_params["error"],
          auth_code <- conn.query_params["code"],
          auth_state <- conn.query_params["state"],
-         {:ok, notify_chat_id, language} <-
+         {:ok, notify_chat_id} <-
            TodoistBot.Storage.complete_authorization(auth_code, auth_state) do
       Task.start(fn ->
         notify_chat_id
-        |> TodoistBot.Interaction.notification(:authorization_success_text, language)
+        |> TodoistBot.Interaction.notification(
+          "You have been succesfully authorized! Now simply drop me a message to create a new task"
+        )
         |> TodoistBot.Processor.send_notification()
       end)
 
       Plug.Conn.send_resp(
         conn,
         200,
-        TodoistBot.Strings.get_string(:authorization_success_web, language)
+        "You have been succesfully authorized."
       )
     else
       _ ->

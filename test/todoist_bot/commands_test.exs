@@ -17,7 +17,9 @@ defmodule TodoistBotTest.Commands do
       }
       |> Commands.match()
 
-    assert i.response.text == Strings.get_string(:help_text, "en")
+    assert i.response.text ==
+             "/help - show this help\n/about - about this bot\n/logout - make this bot forget you\n"
+
     assert i.response.type == :message
     assert i.response.chat_id == 111
     assert i.response.reply_markup == nil
@@ -36,13 +38,11 @@ defmodule TodoistBotTest.Commands do
         response: %Interaction.Response{
           chat_id: 111
         },
-        user: %Interaction.User{
-          language: "ru"
-        }
+        user: %Interaction.User{}
       }
       |> Commands.match()
 
-    assert i.response.text == Strings.get_string(:about_text, "ru")
+    assert "*Telegram for Todoist*" <> _ = i.response.text
     assert i.response.type == :message
     assert i.response.chat_id == 111
     assert i.response.reply_markup == nil
@@ -50,50 +50,6 @@ defmodule TodoistBotTest.Commands do
     assert i.response.answer_callback_query_text == nil
     assert i.response.message_id == nil
     assert i.response.parse_mode == "Markdown"
-  end
-
-  test "/settings" do
-    i =
-      %Interaction{
-        request: %Interaction.Request{
-          text: "/settings"
-        },
-        response: %Interaction.Response{
-          chat_id: 111
-        },
-        user: %Interaction.User{}
-      }
-      |> Commands.match()
-
-    assert i.response.text == Strings.get_string(:settings_menu_text, "en")
-    assert i.response.type == :message
-    assert i.response.chat_id == 111
-
-    assert i.response.reply_markup == %{
-             inline_keyboard: [
-               [
-                 %{
-                   text: Strings.get_string(:en, "en"),
-                   callback_data: "/lan.en"
-                 },
-                 %{
-                   text: Strings.get_string(:pl, "pl"),
-                   callback_data: "/lan.pl"
-                 }
-               ],
-               [
-                 %{
-                   text: Strings.get_string(:ru, "ru"),
-                   callback_data: "/lan.ru"
-                 }
-               ]
-             ]
-           }
-
-    assert i.response.callback_query_id == nil
-    assert i.response.answer_callback_query_text == nil
-    assert i.response.message_id == nil
-    assert i.response.parse_mode == nil
   end
 
   test "some text" do
@@ -120,72 +76,16 @@ defmodule TodoistBotTest.Commands do
                [
                  %{
                    text: Strings.get_string(:authorization_request_button, "en"),
-                   url: "https://localhost/authorize?uuid=auth_state&language=en"
+                   url: "https://localhost/authorize?uuid=auth_state"
                  }
                ],
-               [
-                 %{
-                   text: Strings.get_string(:settings_button, "en"),
-                   callback_data: "/unauthorized.settings"
-                 }
-               ]
+               []
              ]
            }
 
     assert i.response.callback_query_id == nil
     assert i.response.answer_callback_query_text == nil
     assert i.response.message_id == nil
-    assert i.response.parse_mode == nil
-  end
-
-  test "callback query /unauthorized.settings" do
-    i =
-      %Interaction{
-        request: %Interaction.Request{
-          callback: "/unauthorized.settings"
-        },
-        response: %Interaction.Response{
-          chat_id: 111,
-          message_id: 222
-        },
-        user: %Interaction.User{}
-      }
-      |> Commands.match()
-
-    assert i.response.text == ""
-    assert i.response.type == :edit_markup
-    assert i.response.chat_id == 111
-
-    assert i.response.reply_markup == %{
-             inline_keyboard: [
-               [
-                 %{
-                   text: Strings.get_string(:back, "en"),
-                   callback_data: "/unauthorized.back"
-                 }
-               ],
-               [
-                 %{
-                   text: Strings.get_string(:en, "en"),
-                   callback_data: "/unauthorized.lan.en"
-                 },
-                 %{
-                   text: Strings.get_string(:pl, "pl"),
-                   callback_data: "/unauthorized.lan.pl"
-                 }
-               ],
-               [
-                 %{
-                   text: Strings.get_string(:ru, "ru"),
-                   callback_data: "/unauthorized.lan.ru"
-                 }
-               ]
-             ]
-           }
-
-    assert i.response.callback_query_id == nil
-    assert i.response.answer_callback_query_text == nil
-    assert i.response.message_id == 222
     assert i.response.parse_mode == nil
   end
 
@@ -214,92 +114,15 @@ defmodule TodoistBotTest.Commands do
                [
                  %{
                    text: Strings.get_string(:authorization_request_button, "en"),
-                   url: "https://localhost/authorize?uuid=auth_state&language=en"
+                   url: "https://localhost/authorize?uuid=auth_state"
                  }
                ],
-               [
-                 %{
-                   text: Strings.get_string(:settings_button, "en"),
-                   callback_data: "/unauthorized.settings"
-                 }
-               ]
+               []
              ]
            }
 
     assert i.response.callback_query_id == nil
     assert i.response.answer_callback_query_text == nil
-    assert i.response.message_id == 222
-    assert i.response.parse_mode == nil
-  end
-
-  test "callback query /unauthorized.lan.ru" do
-    i =
-      %Interaction{
-        request: %Interaction.Request{
-          callback: "/unauthorized.lan.ru"
-        },
-        response: %Interaction.Response{
-          chat_id: 111,
-          message_id: 222,
-          callback_query_id: 333
-        },
-        user: %Interaction.User{
-          auth_state: "auth_state",
-          language: "en"
-        }
-      }
-      |> Commands.match()
-
-    assert i.response.text == Strings.get_string(:authorization_request_text, "ru")
-    assert i.response.type == :edit_text
-    assert i.response.chat_id == 111
-
-    assert i.response.reply_markup == %{
-             inline_keyboard: [
-               [
-                 %{
-                   text: Strings.get_string(:authorization_request_button, "ru"),
-                   url: "https://localhost/authorize?uuid=auth_state&language=ru"
-                 }
-               ],
-               [
-                 %{
-                   text: Strings.get_string(:settings_button, "ru"),
-                   callback_data: "/unauthorized.settings"
-                 }
-               ]
-             ]
-           }
-
-    assert i.response.callback_query_id == 333
-    assert i.response.answer_callback_query_text == Strings.get_string(:language_changed, "ru")
-    assert i.response.message_id == 222
-    assert i.response.parse_mode == nil
-  end
-
-  test "callback query /lan.ru" do
-    i =
-      %Interaction{
-        request: %Interaction.Request{
-          callback: "/lan.ru"
-        },
-        response: %Interaction.Response{
-          chat_id: 111,
-          message_id: 222,
-          callback_query_id: 333
-        },
-        user: %Interaction.User{
-          language: "en"
-        }
-      }
-      |> Commands.match()
-
-    assert i.response.text == ""
-    assert i.response.type == :answer_callback
-    assert i.response.chat_id == 111
-    assert i.response.reply_markup == nil
-    assert i.response.callback_query_id == 333
-    assert i.response.answer_callback_query_text == Strings.get_string(:language_changed, "ru")
     assert i.response.message_id == 222
     assert i.response.parse_mode == nil
   end
@@ -315,9 +138,7 @@ defmodule TodoistBotTest.Commands do
           message_id: 222,
           callback_query_id: 333
         },
-        user: %Interaction.User{
-          language: "en"
-        }
+        user: %Interaction.User{}
       }
       |> Commands.match()
 

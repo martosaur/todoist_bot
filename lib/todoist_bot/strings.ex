@@ -1,6 +1,4 @@
 defmodule TodoistBot.Strings do
-  @supported_languages [en: "en", pl: "pl", ru: "ru"]
-
   @strings %{
     authorization_request_text: %{
       "en" => "Please authorize this bot to access your account",
@@ -44,14 +42,9 @@ defmodule TodoistBot.Strings do
       "pl" => nil,
       "ru" => "Язык успешно изменен."
     },
-    settings_menu_text: %{
-      "en" => "Language settings",
-      "pl" => nil,
-      "ru" => "Настройки языка"
-    },
     help_text: %{
       "en" =>
-        "/help - show this help\n/settings - change language\n/about - about this bot\n/logout - make this bot forget you",
+        "/help - show this help\n/about - about this bot\n/logout - make this bot forget you",
       "pl" => nil,
       "ru" =>
         "/help - показать эту справку\n/settings - выбрать язык\n/about - информация о боте\n/logout - стереть вас из памяти этого бота"
@@ -131,6 +124,4 @@ defmodule TodoistBot.Strings do
         s
     end
   end
-
-  def get_supported_languages(), do: @supported_languages
 end

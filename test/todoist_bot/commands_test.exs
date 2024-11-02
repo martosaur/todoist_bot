@@ -2,7 +2,6 @@ defmodule TodoistBotTest.Commands do
   use ExUnit.Case, async: false
   alias TodoistBot.Interaction
   alias TodoistBot.Commands
-  alias TodoistBot.Strings
 
   test "/help" do
     i =
@@ -67,7 +66,7 @@ defmodule TodoistBotTest.Commands do
       }
       |> Commands.match()
 
-    assert i.response.text == Strings.get_string(:authorization_request_text, "en")
+    assert i.response.text == "Please authorize this bot to access your account"
     assert i.response.type == :message
     assert i.response.chat_id == 111
 
@@ -75,7 +74,7 @@ defmodule TodoistBotTest.Commands do
              inline_keyboard: [
                [
                  %{
-                   text: Strings.get_string(:authorization_request_button, "en"),
+                   text: "Authorize on Todoist",
                    url: "https://localhost/authorize?uuid=auth_state"
                  }
                ],
@@ -105,7 +104,7 @@ defmodule TodoistBotTest.Commands do
       }
       |> Commands.match()
 
-    assert i.response.text == Strings.get_string(:authorization_request_text, "en")
+    assert i.response.text == "Please authorize this bot to access your account"
     assert i.response.type == :edit_markup
     assert i.response.chat_id == 111
 
@@ -113,7 +112,7 @@ defmodule TodoistBotTest.Commands do
              inline_keyboard: [
                [
                  %{
-                   text: Strings.get_string(:authorization_request_button, "en"),
+                   text: "Authorize on Todoist",
                    url: "https://localhost/authorize?uuid=auth_state"
                  }
                ],
@@ -142,7 +141,7 @@ defmodule TodoistBotTest.Commands do
       }
       |> Commands.match()
 
-    assert i.response.text == Strings.get_string(:logout_success_text, "en")
+    assert i.response.text == "Who are you? Do I know you?"
     assert i.response.type == :edit_text
     assert i.response.chat_id == 111
     assert i.response.reply_markup == nil
@@ -168,7 +167,9 @@ defmodule TodoistBotTest.Commands do
       }
       |> Commands.match()
 
-    assert i.response.text == Strings.get_string(:logout_confirm_text, "en")
+    assert i.response.text ==
+             "Are you sure you want to logout and disappear without a trace from this bot's life?"
+
     assert i.response.type == :message
     assert i.response.chat_id == 111
 
@@ -176,7 +177,7 @@ defmodule TodoistBotTest.Commands do
              inline_keyboard: [
                [
                  %{
-                   text: Strings.get_string(:logout_confirm_yes_button, "en"),
+                   text: "Yes",
                    callback_data: "/logout.confirm.yes"
                  }
                ]

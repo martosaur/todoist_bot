@@ -33,7 +33,8 @@ defmodule TodoistBot.MixProject do
       {:req, "~> 0.5.6"},
       {:off_broadway_telegram, git: "https://github.com/martosaur/off_broadway_telegram.git"},
       {:ecto_sql, "~> 3.0"},
-      {:ecto_sqlite3, "~> 0.17"}
+      {:ecto_sqlite3, "~> 0.17"},
+      {:disco_log, "~> 0.5.2"}
     ]
   end
 end

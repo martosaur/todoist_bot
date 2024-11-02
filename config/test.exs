@@ -12,3 +12,6 @@ config :todoist_bot,
   app_host: "https://localhost/",
   webhook_token: "secret_token",
   todoist_app_client_id: "secret_client_id"
+
+config :disco_log,
+  enable: false

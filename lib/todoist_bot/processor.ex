@@ -1,4 +1,5 @@
 defmodule TodoistBot.Processor do
+  alias TodoistBot.Commands
   alias TodoistBot.Storage
   alias TodoistBot.Interaction
   alias TodoistBot.Telegram.API
@@ -8,9 +9,9 @@ defmodule TodoistBot.Processor do
 
   def process_message(%{} = update) do
     update
-    |> Interaction.new()
-    |> TodoistBot.Storage.load_user()
-    |> TodoistBot.Commands.match()
+    |> Interaction.from_update()
+    |> Storage.load_user()
+    |> Commands.match()
     |> save_user_state()
     |> send_response()
   end

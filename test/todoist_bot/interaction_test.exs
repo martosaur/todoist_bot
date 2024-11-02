@@ -2,25 +2,108 @@ defmodule TodoistBotTest.Interaction do
   use ExUnit.Case, async: false
   alias TodoistBot.Interaction
 
-  test "new: create interaction from callback query" do
-    update = %{
-      "callback_query" => %{
-        "data" => "/lan.en",
-        "from" => %{
-          "first_name" => "abc",
-          "id" => 123,
-          "last_name" => "abc",
-          "username" => "abc"
+  describe "from_update" do
+    test "callback query" do
+      update = %{
+        "callback_query" => %{
+          "data" => "/lan.en",
+          "from" => %{
+            "first_name" => "abc",
+            "id" => 123,
+            "last_name" => "abc",
+            "username" => "abc"
+          },
+          "id" => "456",
+          "inline_message_id" => nil,
+          "message" => %{
+            "audio" => nil,
+            "caption" => nil,
+            "channel_chat_created" => nil,
+            "chat" => %{
+              "first_name" => "abc",
+              "id" => 789,
+              "last_name" => "abc",
+              "photo" => nil,
+              "title" => nil,
+              "type" => "private",
+              "username" => "abc"
+            },
+            "contact" => nil,
+            "date" => 1_526_201_003,
+            "delete_chat_photo" => nil,
+            "document" => nil,
+            "edit_date" => nil,
+            "entities" => nil,
+            "forward_date" => nil,
+            "forward_from" => nil,
+            "forward_from_chat" => nil,
+            "from" => %{
+              "first_name" => "bot",
+              "id" => 012,
+              "last_name" => nil,
+              "username" => "bot"
+            },
+            "group_chat_created" => nil,
+            "left_chat_member" => nil,
+            "location" => nil,
+            "message_id" => 666,
+            "migrate_from_chat_id" => nil,
+            "migrate_to_chat_id" => nil,
+            "new_chat_member" => nil,
+            "new_chat_photo" => [],
+            "new_chat_title" => nil,
+            "photo" => [],
+            "pinned_message" => nil,
+            "reply_to_message" => nil,
+            "sticker" => nil,
+            "supergroup_chat_created" => nil,
+            "text" => "Language settings",
+            "venue" => nil,
+            "video" => nil,
+            "voice" => nil
+          }
         },
-        "id" => "456",
-        "inline_message_id" => nil,
+        "channel_post" => nil,
+        "chosen_inline_result" => nil,
+        "edited_message" => nil,
+        "inline_query" => nil,
+        "message" => nil,
+        "update_id" => 9_999_999
+      }
+
+      assert {:ok, interaction} = Interaction.from_update(update)
+
+      assert %Interaction{
+               request: %{
+                 chat_id: 789,
+                 text: nil,
+                 callback: "/lan.en"
+               },
+               response: %{
+                 chat_id: 789,
+                 text: nil,
+                 type: nil,
+                 callback_query_id: "456",
+                 message_id: 666
+               },
+               user: nil
+             } = interaction
+    end
+
+    test "regular message" do
+      update = %{
+        "callback_query" => nil,
+        "channel_post" => nil,
+        "chosen_inline_result" => nil,
+        "edited_message" => nil,
+        "inline_query" => nil,
         "message" => %{
           "audio" => nil,
           "caption" => nil,
           "channel_chat_created" => nil,
           "chat" => %{
             "first_name" => "abc",
-            "id" => 789,
+            "id" => 111,
             "last_name" => "abc",
             "photo" => nil,
             "title" => nil,
@@ -32,20 +115,20 @@ defmodule TodoistBotTest.Interaction do
           "delete_chat_photo" => nil,
           "document" => nil,
           "edit_date" => nil,
-          "entities" => nil,
+          "entities" => [%{"length" => 9, "offset" => 0, "type" => "bot_command"}],
           "forward_date" => nil,
           "forward_from" => nil,
           "forward_from_chat" => nil,
           "from" => %{
-            "first_name" => "bot",
-            "id" => 012,
-            "last_name" => nil,
-            "username" => "bot"
+            "first_name" => "abc",
+            "id" => 222,
+            "last_name" => "abc",
+            "username" => "abc"
           },
           "group_chat_created" => nil,
           "left_chat_member" => nil,
           "location" => nil,
-          "message_id" => 666,
+          "message_id" => 333,
           "migrate_from_chat_id" => nil,
           "migrate_to_chat_id" => nil,
           "new_chat_member" => nil,
@@ -56,123 +139,32 @@ defmodule TodoistBotTest.Interaction do
           "reply_to_message" => nil,
           "sticker" => nil,
           "supergroup_chat_created" => nil,
-          "text" => "Language settings",
+          "text" => "/settings",
           "venue" => nil,
           "video" => nil,
           "voice" => nil
-        }
-      },
-      "channel_post" => nil,
-      "chosen_inline_result" => nil,
-      "edited_message" => nil,
-      "inline_query" => nil,
-      "message" => nil,
-      "update_id" => 9_999_999
-    }
-
-    i = Interaction.new(update)
-
-    assert i.request.raw == update
-    assert i.request.chat_id == 789
-    assert i.request.text == ""
-    assert i.request.callback == "/lan.en"
-
-    assert i.response.chat_id == 789
-    assert i.response.text == ""
-    assert i.response.type == :none
-    assert i.response.callback_query_id == "456"
-    assert i.response.message_id == 666
-
-    assert i.user.telegram_id == 123
-    assert i.user.last_chat_id == 789
-
-    assert i.user.raw == %{
-             "first_name" => "abc",
-             "id" => 123,
-             "last_name" => "abc",
-             "username" => "abc"
-           }
-  end
-
-  test "new: create interaction from regular message" do
-    update = %{
-      "callback_query" => nil,
-      "channel_post" => nil,
-      "chosen_inline_result" => nil,
-      "edited_message" => nil,
-      "inline_query" => nil,
-      "message" => %{
-        "audio" => nil,
-        "caption" => nil,
-        "channel_chat_created" => nil,
-        "chat" => %{
-          "first_name" => "abc",
-          "id" => 111,
-          "last_name" => "abc",
-          "photo" => nil,
-          "title" => nil,
-          "type" => "private",
-          "username" => "abc"
         },
-        "contact" => nil,
-        "date" => 1_526_201_003,
-        "delete_chat_photo" => nil,
-        "document" => nil,
-        "edit_date" => nil,
-        "entities" => [%{"length" => 9, "offset" => 0, "type" => "bot_command"}],
-        "forward_date" => nil,
-        "forward_from" => nil,
-        "forward_from_chat" => nil,
-        "from" => %{
-          "first_name" => "abc",
-          "id" => 222,
-          "last_name" => "abc",
-          "username" => "abc"
-        },
-        "group_chat_created" => nil,
-        "left_chat_member" => nil,
-        "location" => nil,
-        "message_id" => 333,
-        "migrate_from_chat_id" => nil,
-        "migrate_to_chat_id" => nil,
-        "new_chat_member" => nil,
-        "new_chat_photo" => [],
-        "new_chat_title" => nil,
-        "photo" => [],
-        "pinned_message" => nil,
-        "reply_to_message" => nil,
-        "sticker" => nil,
-        "supergroup_chat_created" => nil,
-        "text" => "/settings",
-        "venue" => nil,
-        "video" => nil,
-        "voice" => nil
-      },
-      "update_id" => 444
-    }
+        "update_id" => 444
+      }
 
-    i = Interaction.new(update)
+      assert {:ok, interaction} = Interaction.from_update(update)
 
-    assert i.request.raw == update
-    assert i.request.chat_id == 111
-    assert i.request.text == "/settings"
-    assert i.request.callback == ""
-
-    assert i.response.chat_id == 111
-    assert i.response.text == ""
-    assert i.response.type == :none
-    assert i.response.callback_query_id == nil
-    assert i.response.message_id == nil
-
-    assert i.user.telegram_id == 222
-    assert i.user.last_chat_id == 111
-
-    assert i.user.raw == %{
-             "first_name" => "abc",
-             "id" => 222,
-             "last_name" => "abc",
-             "username" => "abc"
-           }
+      assert %Interaction{
+               request: %{
+                 chat_id: 111,
+                 text: "/settings",
+                 callback: nil
+               },
+               response: %{
+                 chat_id: 111,
+                 text: nil,
+                 type: nil,
+                 callback_query_id: nil,
+                 message_id: nil
+               },
+               user: nil
+             } = interaction
+    end
   end
 
   test "authorized? true" do

@@ -1,14 +1,85 @@
 defmodule TodoistBot.Interaction do
+  use Ecto.Schema
+  import Ecto.Changeset
+
   alias __MODULE__
 
-  defstruct request: nil, response: nil, user: nil
+  @primary_key false
+  embedded_schema do
+    embeds_one :request, Request do
+      field(:raw, :map)
+      field(:chat_id, :integer)
+      field(:text, :string)
+      field(:callback, :string)
+    end
 
-  def new(%{} = update) do
-    %Interaction{
-      request: TodoistBot.Interaction.Request.new(update),
-      response: TodoistBot.Interaction.Response.new(update),
-      user: TodoistBot.Interaction.User.new(update)
+    embeds_one :response, Response do
+      field(:chat_id, :integer)
+      field(:callback_query_id, :string)
+      field(:message_id, :integer)
+      field(:text, :string)
+      field(:reply_markup, :map)
+      field(:answer_callback_query_text, :string)
+      field(:type, Ecto.Enum, values: [:message, :edit_markup, :edit_text, :answer_callback])
+      field(:parse_mode, :string)
+    end
+
+    field(:user, :map)
+  end
+
+  def from_update(%{"callback_query" => %{}} = update) do
+    params = %{
+      request: %{
+        raw: update,
+        chat_id: get_in(update, ["callback_query", "message", "chat", "id"]),
+        callback: get_in(update["callback_query"]["data"])
+      },
+      response: %{
+        chat_id: get_in(update, ["callback_query", "message", "chat", "id"]),
+        callback_query_id: get_in(update, ["callback_query", "id"]),
+        message_id: get_in(update, ["callback_query", "message", "message_id"])
+      }
     }
+
+    %__MODULE__{}
+    |> changeset(params)
+    |> apply_action(:create)
+  end
+
+  def from_update(update) do
+    params = %{
+      request: %{
+        raw: update,
+        chat_id: get_in(update, ["message", "chat", "id"]),
+        text: get_in(update["message"]["text"]) || get_in(update["message"]["caption"]) || ""
+      },
+      response: %{
+        chat_id: get_in(update, ["message", "chat", "id"])
+      }
+    }
+
+    %__MODULE__{}
+    |> changeset(params)
+    |> apply_action(:create)
+  end
+
+  def changeset(interaction, attrs \\ %{}) do
+    interaction
+    |> change(attrs)
+    |> cast_embed(:request, with: &request_changeset/2)
+    |> cast_embed(:response, with: &response_changeset/2)
+  end
+
+  def request_changeset(request, attrs \\ %{}) do
+    request
+    |> cast(attrs, [:raw, :chat_id, :text, :callback])
+    |> validate_required([:raw, :chat_id])
+  end
+
+  def response_changeset(response, attrs \\ %{}) do
+    response
+    |> cast(attrs, [:chat_id, :text, :callback])
+    |> validate_required([:chat_id])
   end
 
   def notification(chat_id, text) do

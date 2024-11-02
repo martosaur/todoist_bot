@@ -5,7 +5,7 @@ defmodule TodoistBotTest.Api do
   @opts TodoistBot.Api.init([])
 
   test "404 on unknown endpoint" do
-    conn = conn(:get, "authorise")
+    conn = conn(:get, "/authorise")
 
     conn = TodoistBot.Api.call(conn, @opts)
     assert conn.state == :sent

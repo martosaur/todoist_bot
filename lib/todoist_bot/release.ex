@@ -3,7 +3,7 @@ defmodule TodoistBot.Release do
   Used for executing DB release tasks when run in production without Mix
   installed.
   """
-  @app :todoist_app
+  @app :todoist_bot
 
   def migrate do
     load_app()

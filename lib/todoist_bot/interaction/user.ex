@@ -28,22 +28,15 @@ defmodule TodoistBot.Interaction.User do
       :raw
     ])
     |> validate_required([:telegram_id])
-  end
-
-  def new(%{"callback_query" => %{}} = update) do
-    %User{
-      telegram_id: get_in(update, ["callback_query", "from", "id"]),
-      last_chat_id: get_in(update, ["callback_query", "message", "chat", "id"]),
-      raw: get_in(update["callback_query"]["from"])
-    }
-  end
-
-  def new(update) do
-    %User{
-      telegram_id: get_in(update, ["message", "from", "id"]),
-      last_chat_id: get_in(update, ["message", "chat", "id"]),
-      raw: get_in(update["message"]["from"])
-    }
+    |> then(fn cs ->
+      if get_field(cs, :auth_state) do
+        cs
+      else
+        auth_state = "#{fetch_field!(cs, :telegram_id)}.#{random_string()}"
+        put_change(cs, :auth_state, auth_state)
+      end
+    end)
+    |> unique_constraint(:telegram_id)
   end
 
   def new_state(%User{} = user) do

@@ -9,16 +9,6 @@ defmodule TodoistBot.Storage do
     %{i | user: user}
   end
 
-  def load_user(%Interaction{user: %{telegram_id: telegram_id}} = i) do
-    case get_user(telegram_id) do
-      nil ->
-        Interaction.new_user_state(i)
-
-      db_user ->
-        Interaction.put_user_from_db(i, db_user)
-    end
-  end
-
   def delete_user(%Interaction{user: user} = i) do
     case Repo.delete(user) do
       {:ok, _} ->

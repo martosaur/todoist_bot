@@ -8,12 +8,13 @@ defmodule TodoistBot.Processor do
   def process_message(nil), do: Logger.error("Processor received nil")
 
   def process_message(%{} = update) do
-    update
-    |> Interaction.from_update()
-    |> Storage.load_user()
-    |> Commands.match()
-    |> save_user_state()
-    |> send_response()
+    with {:ok, interaction} <- Interaction.from_update(update),
+         {:ok, interaction} <- Interaction.load_user(interaction, update) do
+      interaction
+      |> Commands.match()
+      |> save_user_state()
+      |> send_response()
+    end
   end
 
   def send_notification(%Interaction{} = i) do

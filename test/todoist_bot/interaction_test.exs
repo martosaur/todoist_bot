@@ -1,5 +1,5 @@
 defmodule TodoistBotTest.Interaction do
-  use ExUnit.Case, async: false
+  use TodoistBot.DataCase, async: false
   alias TodoistBot.Interaction
 
   describe "from_update" do
@@ -164,6 +164,64 @@ defmodule TodoistBotTest.Interaction do
                },
                user: nil
              } = interaction
+    end
+  end
+
+  describe "load_user/2" do
+    test "creates new user" do
+      interaction = %Interaction{request: %Interaction.Request{}}
+
+      update = %{
+        "message" => %{
+          "chat" => %{
+            "id" => 111
+          },
+          "from" => %{
+            "first_name" => "abc",
+            "id" => 222,
+            "last_name" => "abc",
+            "username" => "abc"
+          }
+        }
+      }
+
+      assert {:ok,
+              %Interaction{
+                user: %Interaction.User{
+                  telegram_id: 222,
+                  last_chat_id: 111,
+                  auth_state: "222." <> _
+                }
+              }} = Interaction.load_user(interaction, update)
+    end
+
+    test "updates existing user" do
+      Repo.insert!(%Interaction.User{telegram_id: 222, last_chat_id: 0, auth_state: "foo"})
+
+      interaction = %Interaction{request: %Interaction.Request{}}
+
+      update = %{
+        "message" => %{
+          "chat" => %{
+            "id" => 111
+          },
+          "from" => %{
+            "first_name" => "abc",
+            "id" => 222,
+            "last_name" => "abc",
+            "username" => "abc"
+          }
+        }
+      }
+
+      assert {:ok,
+              %Interaction{
+                user: %Interaction.User{
+                  telegram_id: 222,
+                  last_chat_id: 111,
+                  auth_state: "foo"
+                }
+              }} = Interaction.load_user(interaction, update)
     end
   end
 

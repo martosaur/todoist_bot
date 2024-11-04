@@ -3,6 +3,8 @@ defmodule TodoistBot.Interaction do
   import Ecto.Changeset
 
   alias __MODULE__
+  alias TodoistBot.Interaction.User
+  alias TodoistBot.Repo
 
   @primary_key false
   embedded_schema do
@@ -80,6 +82,34 @@ defmodule TodoistBot.Interaction do
     response
     |> cast(attrs, [:chat_id, :text, :callback])
     |> validate_required([:chat_id])
+  end
+
+  def load_user(interaction, update) do
+    params =
+      if interaction.request.callback do
+        %{
+          telegram_id: get_in(update, ["callback_query", "from", "id"]),
+          last_chat_id: get_in(update, ["callback_query", "message", "chat", "id"]),
+          raw: get_in(update["callback_query"]["from"])
+        }
+      else
+        %{
+          telegram_id: get_in(update, ["message", "from", "id"]),
+          last_chat_id: get_in(update, ["message", "chat", "id"]),
+          raw: get_in(update["message"]["from"])
+        }
+      end
+
+    with {:ok, user} <-
+           %User{}
+           |> User.changeset(params)
+           |> Repo.insert(
+             on_conflict: {:replace, [:last_chat_id, :raw]},
+             conflict_target: :telegram_id,
+             returning: true
+           ) do
+      {:ok, %{interaction | user: user}}
+    end
   end
 
   def notification(chat_id, text) do

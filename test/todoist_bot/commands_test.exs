@@ -1,7 +1,9 @@
 defmodule TodoistBotTest.Commands do
-  use ExUnit.Case, async: false
+  use TodoistBot.DataCase, async: false
   alias TodoistBot.Interaction
   alias TodoistBot.Commands
+  alias TodoistBot.Interaction.User
+  alias TodoistBot.Repo
 
   test "/help" do
     i =
@@ -88,45 +90,9 @@ defmodule TodoistBotTest.Commands do
     assert i.response.parse_mode == nil
   end
 
-  test "callback query /unauthorized.back" do
-    i =
-      %Interaction{
-        request: %Interaction.Request{
-          callback: "/unauthorized.back"
-        },
-        response: %Interaction.Response{
-          chat_id: 111,
-          message_id: 222
-        },
-        user: %Interaction.User{
-          auth_state: "auth_state"
-        }
-      }
-      |> Commands.match()
-
-    assert i.response.text == "Please authorize this bot to access your account"
-    assert i.response.type == :edit_markup
-    assert i.response.chat_id == 111
-
-    assert i.response.reply_markup == %{
-             inline_keyboard: [
-               [
-                 %{
-                   text: "Authorize on Todoist",
-                   url: "https://localhost/authorize?uuid=auth_state"
-                 }
-               ],
-               []
-             ]
-           }
-
-    assert i.response.callback_query_id == nil
-    assert i.response.answer_callback_query_text == nil
-    assert i.response.message_id == 222
-    assert i.response.parse_mode == nil
-  end
-
   test "callback query /logout.confirm.yes" do
+    user = %User{telegram_id: 42} |> Repo.insert!()
+
     i =
       %Interaction{
         request: %Interaction.Request{
@@ -137,7 +103,7 @@ defmodule TodoistBotTest.Commands do
           message_id: 222,
           callback_query_id: 333
         },
-        user: %Interaction.User{}
+        user: user
       }
       |> Commands.match()
 
@@ -149,7 +115,7 @@ defmodule TodoistBotTest.Commands do
     assert i.response.answer_callback_query_text == nil
     assert i.response.message_id == 222
     assert i.response.parse_mode == nil
-    assert i.user.delete == true
+    refute Repo.reload(i.user)
   end
 
   test "/logout" do

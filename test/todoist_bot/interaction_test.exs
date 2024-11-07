@@ -225,66 +225,6 @@ defmodule TodoistBotTest.Interaction do
     end
   end
 
-  test "authorized? true" do
-    b =
-      %Interaction{
-        user: %Interaction.User{
-          auth_code: "test"
-        }
-      }
-      |> Interaction.authorized?()
-
-    assert b == true
-  end
-
-  test "authorized? false" do
-    b =
-      %Interaction{
-        user: %Interaction.User{
-          auth_code: nil
-        }
-      }
-      |> Interaction.authorized?()
-
-    assert b == false
-  end
-
-  test "callback_query? true" do
-    b =
-      %Interaction{
-        request: %Interaction.Request{
-          callback: "test"
-        }
-      }
-      |> Interaction.callback_query?()
-
-    assert b == true
-  end
-
-  test "callback_query? false" do
-    b =
-      %Interaction{
-        request: %Interaction.Request{
-          callback: ""
-        }
-      }
-      |> Interaction.callback_query?()
-
-    assert b == false
-  end
-
-  test "command?" do
-    b =
-      %Interaction{
-        request: %Interaction.Request{
-          text: ";kljkh"
-        }
-      }
-      |> Interaction.command?(";kljkh")
-
-    assert b == true
-  end
-
   test "new_user_state: populates auth_state" do
     i =
       %Interaction{
@@ -343,19 +283,6 @@ defmodule TodoistBotTest.Interaction do
     assert i.response.text == "test"
   end
 
-  test "put_resp_answer_callback_text" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{
-          answer_callback_query_text: "test"
-        },
-        user: %Interaction.User{}
-      }
-      |> Interaction.put_resp_answer_callback_text("test text")
-
-    assert i.response.answer_callback_query_text == "test text"
-  end
-
   test "put_resp_type_*" do
     i =
       %Interaction{
@@ -363,21 +290,17 @@ defmodule TodoistBotTest.Interaction do
           type: :none
         }
       }
-      |> Interaction.put_resp_type_message()
+      |> Interaction.put_resp_type(:message)
 
     assert i.response.type == :message
 
-    j = Interaction.put_resp_type_edit_markup(i)
+    j = Interaction.put_resp_type(i, :edit_markup)
 
     assert j.response.type == :edit_markup
 
-    k = Interaction.put_resp_type_edit_text(i)
+    k = Interaction.put_resp_type(i, :edit_text)
 
     assert k.response.type == :edit_text
-
-    l = Interaction.put_resp_type_answer_callback(i)
-
-    assert l.response.type == :answer_callback
   end
 
   test "add_resp_parse_mode_markup" do
@@ -450,47 +373,5 @@ defmodule TodoistBotTest.Interaction do
              [],
              [%{text: "test_text", callback_data: "data"}]
            ]
-  end
-
-  test "set_user_to_delete" do
-    i =
-      %Interaction{
-        user: %Interaction.User{}
-      }
-      |> Interaction.set_user_to_delete()
-
-    assert i.user.delete == true
-  end
-
-  test "put_user_from_db" do
-    db_user = %Interaction.User{
-      telegram_id: 111,
-      last_chat_id: 0,
-      auth_code: "valid code",
-      auth_state: "valid state",
-      access_token: "valid token"
-    }
-
-    i =
-      %Interaction{
-        user: %Interaction.User{
-          telegram_id: 111,
-          last_chat_id: 222,
-          auth_code: "pew",
-          auth_state: "pew",
-          access_token: "pew",
-          raw: %{a: 1},
-          delete: true
-        }
-      }
-      |> Interaction.put_user_from_db(db_user)
-
-    assert i.user.telegram_id == 111
-    assert i.user.last_chat_id == 222
-    assert i.user.auth_code == "valid code"
-    assert i.user.auth_state == "valid state"
-    assert i.user.access_token == "valid token"
-    assert i.user.raw == %{a: 1}
-    assert i.user.delete == false
   end
 end

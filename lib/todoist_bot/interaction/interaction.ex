@@ -118,23 +118,7 @@ defmodule TodoistBot.Interaction do
       user: %TodoistBot.Interaction.User{}
     }
     |> put_resp_text(text)
-    |> put_resp_type_message()
-  end
-
-  def authorized?(%Interaction{} = i) do
-    i.user.auth_code != nil
-  end
-
-  def has_text?(%Interaction{} = i) do
-    i.request.text != ""
-  end
-
-  def callback_query?(%Interaction{} = i) do
-    i.request.callback != ""
-  end
-
-  def command?(%Interaction{} = i, command) do
-    i.request.text == command
+    |> put_resp_type(:message)
   end
 
   def new_user_state(%Interaction{} = i) do
@@ -142,46 +126,16 @@ defmodule TodoistBot.Interaction do
     put_in(i.user, user)
   end
 
-  def put_user_from_db(%Interaction{} = i, db_user) do
-    put_in(i.user, db_user)
-    |> put_user_state(
-      last_chat_id: i.user.last_chat_id,
-      raw: i.user.raw
-    )
-  end
-
   def put_user_state(%Interaction{} = i, fields \\ []) do
     user = struct(i.user, fields)
     put_in(i.user, user)
   end
 
-  def put_resp_text(%Interaction{} = i, text) do
-    put_in(i.response.text, text)
-  end
+  def put_resp_text(%Interaction{} = i, text), do: put_in(i.response.text, text)
+  def put_resp_type(%Interaction{} = i, type), do: put_in(i.response.type, type)
 
-  def put_resp_answer_callback_text(%Interaction{} = i, text) do
-    put_in(i.response.answer_callback_query_text, text)
-  end
-
-  def put_resp_type_message(%Interaction{} = i) do
-    put_in(i.response.type, :message)
-  end
-
-  def put_resp_type_edit_markup(%Interaction{} = i) do
-    put_in(i.response.type, :edit_markup)
-  end
-
-  def put_resp_type_edit_text(%Interaction{} = i) do
-    put_in(i.response.type, :edit_text)
-  end
-
-  def put_resp_type_answer_callback(%Interaction{} = i) do
-    put_in(i.response.type, :answer_callback)
-  end
-
-  def put_resp_parse_mode_markdown(%Interaction{} = i) do
-    put_in(i.response.parse_mode, "Markdown")
-  end
+  def put_resp_parse_mode_markdown(%Interaction{} = i),
+    do: put_in(i.response.parse_mode, "Markdown")
 
   def add_resp_inline_keyboard(%Interaction{} = i) do
     put_in(i.response.reply_markup, %{inline_keyboard: []})
@@ -213,9 +167,5 @@ defmodule TodoistBot.Interaction do
       i.response.reply_markup.inline_keyboard,
       List.replace_at(keyboard, -1, row ++ [button])
     )
-  end
-
-  def set_user_to_delete(%Interaction{} = i) do
-    put_in(i.user.delete, true)
   end
 end

@@ -1,6 +1,5 @@
 defmodule TodoistBot.Processor do
   alias TodoistBot.Commands
-  alias TodoistBot.Storage
   alias TodoistBot.Interaction
   alias TodoistBot.Telegram.API
   require Logger
@@ -12,7 +11,6 @@ defmodule TodoistBot.Processor do
          {:ok, interaction} <- Interaction.load_user(interaction, update) do
       interaction
       |> Commands.match()
-      |> save_user_state()
       |> send_response()
     end
   end
@@ -25,10 +23,6 @@ defmodule TodoistBot.Processor do
     case response.type do
       :message ->
         send_message(response)
-
-      :edit_markup ->
-        answer_callback_query(response)
-        edit_message_reply_markup(response)
 
       :edit_text ->
         answer_callback_query(response)
@@ -69,18 +63,13 @@ defmodule TodoistBot.Processor do
     end)
   end
 
-  defp edit_message_reply_markup(%Interaction.Response{} = response) do
-    API.request("editMessageReplyMarkup", %{
-      reply_markup: response.reply_markup
-    })
-
-    :ok
-  end
-
   defp edit_message_text(%Interaction.Response{} = response) do
     params =
       Map.reject(
         %{
+          chat_id: response.chat_id,
+          message_id: response.message_id,
+          text: response.text,
           reply_markup: response.reply_markup,
           parse_mode: response.parse_mode
         },
@@ -89,13 +78,5 @@ defmodule TodoistBot.Processor do
 
     API.request("editMessageText", params)
     :ok
-  end
-
-  defp save_user_state(%Interaction{} = i) do
-    if i.user.delete do
-      Storage.delete_user(i)
-    else
-      Storage.save_user(i)
-    end
   end
 end

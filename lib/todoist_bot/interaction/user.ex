@@ -10,7 +10,6 @@ defmodule TodoistBot.Interaction.User do
     field(:auth_code, :string)
     field(:auth_state, :string)
     field(:access_token, :string)
-    field(:delete, :boolean, default: false)
     field(:raw, :map, default: %{})
 
     timestamps(type: :utc_datetime)
@@ -24,7 +23,6 @@ defmodule TodoistBot.Interaction.User do
       :auth_code,
       :auth_state,
       :access_token,
-      :delete,
       :raw
     ])
     |> validate_required([:telegram_id])

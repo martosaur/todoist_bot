@@ -8,7 +8,6 @@ defmodule TodoistBot.Repo.Migrations.CreateUsers do
       add :auth_code, :string
       add :auth_state, :string
       add :access_token, :string
-      add :delete, :boolean, default: false, null: false
       add :raw, :map, default: "{}"
       
       timestamps(type: :utc_datetime)

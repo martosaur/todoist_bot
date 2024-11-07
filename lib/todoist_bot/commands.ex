@@ -1,19 +1,17 @@
 defmodule TodoistBot.Commands do
-  alias TodoistBot.Interaction
   require Logger
+
+  alias TodoistBot.Interaction
+  alias TodoistBot.Repo
 
   def match(interaction) do
     case interaction do
-      %{request: %{callback: "/unauthorized.back"}} ->
-        interaction
-        |> request_authorization()
-        |> Interaction.put_resp_type_edit_markup()
-
       %{request: %{callback: "/logout.confirm.yes"}} ->
+        Repo.delete!(interaction.user)
+
         interaction
         |> Interaction.put_resp_text("Who are you? Do I know you?")
-        |> Interaction.set_user_to_delete()
-        |> Interaction.put_resp_type_edit_text()
+        |> Interaction.put_resp_type(:edit_text)
 
       %{request: %{text: "/help"}} ->
         interaction
@@ -23,7 +21,7 @@ defmodule TodoistBot.Commands do
         /logout - make this bot forget you
         """)
         |> Interaction.put_resp_parse_mode_markdown()
-        |> Interaction.put_resp_type_message()
+        |> Interaction.put_resp_type(:message)
 
       %{request: %{text: "/about"}} ->
         interaction
@@ -31,7 +29,7 @@ defmodule TodoistBot.Commands do
           "*Telegram for Todoist* is a simple bot for adding Inbox tasks through Telegram. This bot is created by @martosaur and is not created by, affiliated with, or supported by Doist. If you want to contribute please see [this repo](https://github.com/martosaur/todoist_bot)"
         )
         |> Interaction.put_resp_parse_mode_markdown()
-        |> Interaction.put_resp_type_message()
+        |> Interaction.put_resp_type(:message)
 
       %{request: %{text: "/logout"}} ->
         interaction
@@ -44,24 +42,24 @@ defmodule TodoistBot.Commands do
           "Yes",
           "/logout.confirm.yes"
         )
-        |> Interaction.put_resp_type_message()
+        |> Interaction.put_resp_type(:message)
 
       %{user: %{auth_code: code}, request: %{text: text}}
       when not is_nil(code) and not is_nil(text) ->
         interaction
         |> TodoistApi.refresh_access_token_if_needed()
         |> TodoistApi.put_text_to_inbox()
-        |> Interaction.put_resp_type_message()
+        |> Interaction.put_resp_type(:message)
 
       %{user: %{auth_code: nil}} ->
         interaction
         |> request_authorization()
-        |> Interaction.put_resp_type_message()
+        |> Interaction.put_resp_type(:message)
 
       _ ->
         interaction
         |> Interaction.put_resp_text("Did you say something?")
-        |> Interaction.put_resp_type_message()
+        |> Interaction.put_resp_type(:message)
     end
   end
 

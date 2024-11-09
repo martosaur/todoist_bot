@@ -2,8 +2,6 @@ defmodule TodoistBot.Interaction.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias __MODULE__
-
   @primary_key {:telegram_id, :id, autogenerate: false}
   schema "users" do
     field(:last_chat_id, :integer)
@@ -37,7 +35,7 @@ defmodule TodoistBot.Interaction.User do
     |> unique_constraint(:telegram_id)
   end
 
-  def new_state(%User{} = user) do
+  def new_state(%__MODULE__{} = user) do
     auth_state = to_string(user.telegram_id) <> "." <> random_string()
     struct(user, auth_state: auth_state)
   end

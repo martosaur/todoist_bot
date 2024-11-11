@@ -2,7 +2,9 @@ defmodule TodoistBot.Commands do
   require Logger
 
   alias TodoistBot.Interaction
+  alias TodoistBot.Interaction.User
   alias TodoistBot.Repo
+  alias TodoistBot.Todoist
 
   def match(interaction) do
     case interaction do
@@ -44,12 +46,41 @@ defmodule TodoistBot.Commands do
         )
         |> Interaction.put_resp_type(:message)
 
-      %{user: %{auth_code: code}, request: %{text: text}}
-      when not is_nil(code) and not is_nil(text) ->
-        interaction
-        |> TodoistApi.refresh_access_token_if_needed()
-        |> TodoistApi.put_text_to_inbox()
-        |> Interaction.put_resp_type(:message)
+      %{user: %{access_token: token} = user, request: %{text: text}}
+      when not is_nil(token) and not is_nil(text) ->
+        "rest/v2/tasks"
+        |> Todoist.API.request(token, method: :post, json: %{content: text})
+        |> case do
+          {:ok, %{status: 200}} ->
+            interaction
+            |> Interaction.put_resp_text("Task added")
+            |> Interaction.put_resp_type(:message)
+
+          {:ok, %{status: code}} when code in [401, 403] ->
+            with {:ok, user} <-
+                   user |> User.changeset(%{auth_code: nil, access_token: nil}) |> Repo.update() do
+              %{interaction | user: user}
+              |> TodoistBot.Commands.request_authorization()
+              |> Interaction.put_resp_text(
+                "Todoist did not believe me and shut the door 😱 I'll have to authenticate you again."
+              )
+              |> Interaction.put_resp_type(:message)
+            else
+              _error ->
+                interaction
+                |> Interaction.put_resp_text(
+                  "Something went terribly wrong 😢 Let's maybe try again?"
+                )
+                |> Interaction.put_resp_type(:message)
+            end
+
+          {_, error} ->
+            Logger.error("Could not add task", interaction: interaction, error: error)
+
+            interaction
+            |> Interaction.put_resp_text("Something went terribly wrong 😢 Let's maybe try again?")
+            |> Interaction.put_resp_type(:message)
+        end
 
       %{user: %{auth_code: nil}} ->
         interaction

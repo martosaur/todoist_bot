@@ -2,6 +2,10 @@ defmodule TodoistBot.Api do
   use Plug.Router
   require Logger
 
+  alias TodoistBot.User
+  alias TodoistBot.Repo
+  alias TodoistBot.Todoist
+
   @scope "task:add"
 
   plug(Plug.Logger)
@@ -28,8 +32,7 @@ defmodule TodoistBot.Api do
     with nil <- conn.query_params["error"],
          auth_code <- conn.query_params["code"],
          auth_state <- conn.query_params["state"],
-         {:ok, user} <-
-           TodoistBot.Storage.complete_authorization(auth_code, auth_state) do
+         {:ok, user} <- complete_authorization(auth_code, auth_state) do
       Task.start(fn ->
         user.last_chat_id
         |> TodoistBot.Interaction.notification(
@@ -55,5 +58,20 @@ defmodule TodoistBot.Api do
 
   match _ do
     send_resp(conn, 404, "Resource not found")
+  end
+
+  defp complete_authorization(auth_code, auth_state) do
+    telegram_id =
+      auth_state
+      |> String.split(".")
+      |> hd
+      |> String.to_integer()
+
+    with %User{} = user <- Repo.get(User, telegram_id),
+         {:ok, %{status: 200, body: %{"access_token" => access_token}}} <-
+           Todoist.API.get_access_token(auth_code),
+         cs = User.changeset(user, %{auth_code: auth_code, access_token: access_token}) do
+      Repo.update(cs)
+    end
   end
 end

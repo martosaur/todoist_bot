@@ -1,7 +1,7 @@
-defmodule TodoistBot.Interaction.UserTest do
+defmodule TodoistBot.UserTest do
   use ExUnit.Case, async: false
 
-  alias TodoistBot.Interaction.User
+  alias TodoistBot.User
 
   describe ".changeset/2" do
     test "only requires telegram_id" do

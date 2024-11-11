@@ -1,4 +1,4 @@
-defmodule TodoistBot.Interaction.User do
+defmodule TodoistBot.User do
   use Ecto.Schema
   import Ecto.Changeset
 

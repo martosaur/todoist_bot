@@ -2,7 +2,7 @@ defmodule TodoistBot.Commands do
   require Logger
 
   alias TodoistBot.Interaction
-  alias TodoistBot.Interaction.User
+  alias TodoistBot.User
   alias TodoistBot.Repo
   alias TodoistBot.Todoist
 
@@ -60,7 +60,7 @@ defmodule TodoistBot.Commands do
             with {:ok, user} <-
                    user |> User.changeset(%{auth_code: nil, access_token: nil}) |> Repo.update() do
               %{interaction | user: user}
-              |> TodoistBot.Commands.request_authorization()
+              |> request_authorization()
               |> Interaction.put_resp_text(
                 "Todoist did not believe me and shut the door 😱 I'll have to authenticate you again."
               )
@@ -94,7 +94,7 @@ defmodule TodoistBot.Commands do
     end
   end
 
-  def request_authorization(%Interaction{} = i) do
+  defp request_authorization(%Interaction{} = i) do
     i
     |> Interaction.put_resp_text("Please authorize this bot to access your account")
     |> Interaction.add_resp_inline_keyboard()

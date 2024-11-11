@@ -33,7 +33,7 @@ defmodule TodoistBot.Api do
          auth_code <- conn.query_params["code"],
          auth_state <- conn.query_params["state"],
          {:ok, user} <- complete_authorization(auth_code, auth_state) do
-      Task.start(fn ->
+      Task.Supervisor.start_child(TodoistBot.TaskSupervisor, fn ->
         user.last_chat_id
         |> TodoistBot.Interaction.notification(
           "You have been succesfully authorized! Now simply drop me a message to create a new task"

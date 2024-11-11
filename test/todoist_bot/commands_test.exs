@@ -2,7 +2,7 @@ defmodule TodoistBotTest.Commands do
   use TodoistBot.DataCase, async: false
   alias TodoistBot.Interaction
   alias TodoistBot.Commands
-  alias TodoistBot.Interaction.User
+  alias TodoistBot.User
   alias TodoistBot.Repo
 
   test "/help" do
@@ -14,7 +14,7 @@ defmodule TodoistBotTest.Commands do
         response: %Interaction.Response{
           chat_id: 111
         },
-        user: %Interaction.User{}
+        user: %User{}
       }
       |> Commands.match()
 
@@ -39,7 +39,7 @@ defmodule TodoistBotTest.Commands do
         response: %Interaction.Response{
           chat_id: 111
         },
-        user: %Interaction.User{}
+        user: %User{}
       }
       |> Commands.match()
 
@@ -62,7 +62,7 @@ defmodule TodoistBotTest.Commands do
         response: %Interaction.Response{
           chat_id: 111
         },
-        user: %Interaction.User{
+        user: %User{
           auth_state: "auth_state"
         }
       }
@@ -127,7 +127,7 @@ defmodule TodoistBotTest.Commands do
         response: %Interaction.Response{
           chat_id: 111
         },
-        user: %Interaction.User{
+        user: %User{
           auth_code: "auth_code"
         }
       }

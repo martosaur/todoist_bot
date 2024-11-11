@@ -1,6 +1,7 @@
 defmodule TodoistBotTest.Interaction do
   use TodoistBot.DataCase, async: false
   alias TodoistBot.Interaction
+  alias TodoistBot.User
 
   describe "from_update" do
     test "callback query" do
@@ -187,7 +188,7 @@ defmodule TodoistBotTest.Interaction do
 
       assert {:ok,
               %Interaction{
-                user: %Interaction.User{
+                user: %User{
                   telegram_id: 222,
                   last_chat_id: 111,
                   auth_state: "222." <> _
@@ -196,7 +197,7 @@ defmodule TodoistBotTest.Interaction do
     end
 
     test "updates existing user" do
-      Repo.insert!(%Interaction.User{telegram_id: 222, last_chat_id: 0, auth_state: "foo"})
+      Repo.insert!(%User{telegram_id: 222, last_chat_id: 0, auth_state: "foo"})
 
       interaction = %Interaction{request: %Interaction.Request{}}
 
@@ -216,7 +217,7 @@ defmodule TodoistBotTest.Interaction do
 
       assert {:ok,
               %Interaction{
-                user: %Interaction.User{
+                user: %User{
                   telegram_id: 222,
                   last_chat_id: 111,
                   auth_state: "foo"
@@ -225,153 +226,124 @@ defmodule TodoistBotTest.Interaction do
     end
   end
 
-  test "new_user_state: populates auth_state" do
-    i =
-      %Interaction{
-        user: %Interaction.User{
-          telegram_id: 111
+  describe "notification/2" do
+    test "creates an interaction for chat_id" do
+      assert %Interaction{
+               user: nil,
+               request: nil,
+               response: %Interaction.Response{chat_id: "chat_id", text: "PSA", type: :message}
+             } = Interaction.notification("chat_id", "PSA")
+    end
+  end
+
+  describe "put_rest_text/2" do
+    test "put_resp_text" do
+      i =
+        %Interaction{
+          response: %Interaction.Response{
+            text: "test"
+          },
+          user: %User{}
         }
-      }
-      |> Interaction.new_user_state()
+        |> Interaction.put_resp_text("test")
 
-    "111." <> random = i.user.auth_state
-    assert random != ""
+      assert i.response.text == "test"
+    end
   end
 
-  test "put_user_state: normal" do
-    i =
-      %Interaction{
-        user: %Interaction.User{
-          telegram_id: 111
-        }
-      }
-      |> Interaction.put_user_state(
-        telegram_id: 222,
-        last_chat_id: 333,
-        auth_code: "code",
-        access_token: "token"
-      )
-
-    assert i.user.telegram_id == 222
-    assert i.user.last_chat_id == 333
-    assert i.user.auth_code == "code"
-    assert i.user.access_token == "token"
-  end
-
-  test "put_user_state: attribute does not exist" do
-    i =
-      %Interaction{
-        user: %Interaction.User{
-          telegram_id: 111
-        }
-      }
-      |> Interaction.put_user_state(hello_world: "test")
-
-    assert i == i
-  end
-
-  test "put_resp_text" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{
-          text: "test"
-        },
-        user: %Interaction.User{}
-      }
-      |> Interaction.put_resp_text("test")
-
-    assert i.response.text == "test"
-  end
-
-  test "put_resp_type_*" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{
-          type: :none
-        }
-      }
-      |> Interaction.put_resp_type(:message)
-
-    assert i.response.type == :message
-
-    j = Interaction.put_resp_type(i, :edit_markup)
-
-    assert j.response.type == :edit_markup
-
-    k = Interaction.put_resp_type(i, :edit_text)
-
-    assert k.response.type == :edit_text
-  end
-
-  test "add_resp_parse_mode_markup" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{}
-      }
-      |> Interaction.put_resp_parse_mode_markdown()
-
-    assert i.response.parse_mode == "Markdown"
-  end
-
-  test "put_resp_inline_keyboard" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{reply_markup: nil}
-      }
-      |> Interaction.add_resp_inline_keyboard()
-
-    assert %{inline_keyboard: []} = i.response.reply_markup
-  end
-
-  test "put_resp_inline_keyboard_row" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{
-          reply_markup: %{inline_keyboard: []}
-        }
-      }
-      |> Interaction.add_resp_inline_keyboard_row()
-
-    assert i.response.reply_markup.inline_keyboard == [[]]
-
-    j = Interaction.add_resp_inline_keyboard_row(i)
-
-    assert j.response.reply_markup.inline_keyboard == [[], []]
-  end
-
-  test "add_resp_inline_keyboard_link_button" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{
-          reply_markup: %{
-            inline_keyboard: [[], []]
+  describe "put_rest_type/2" do
+    test "put_resp_type" do
+      i =
+        %Interaction{
+          response: %Interaction.Response{
+            type: :none
           }
-        },
-        user: %Interaction.User{}
-      }
-      |> Interaction.add_resp_inline_keyboard_link_button("test text", "https://example.com")
+        }
+        |> Interaction.put_resp_type(:message)
 
-    assert i.response.reply_markup.inline_keyboard == [
-             [],
-             [%{text: "test text", url: "https://example.com"}]
-           ]
+      assert i.response.type == :message
+
+      j = Interaction.put_resp_type(i, :edit_markup)
+
+      assert j.response.type == :edit_markup
+
+      k = Interaction.put_resp_type(i, :edit_text)
+
+      assert k.response.type == :edit_text
+    end
   end
 
-  test "add_resp_inline_keyboard_callback_button" do
-    i =
-      %Interaction{
-        response: %Interaction.Response{
-          reply_markup: %{
-            inline_keyboard: [[], []]
-          }
-        },
-        user: %Interaction.User{}
-      }
-      |> Interaction.add_resp_inline_keyboard_callback_button("test_text", "data")
+  describe "misc" do
+    test "add_resp_parse_mode_markup" do
+      i =
+        %Interaction{
+          response: %Interaction.Response{}
+        }
+        |> Interaction.put_resp_parse_mode_markdown()
 
-    assert i.response.reply_markup.inline_keyboard == [
-             [],
-             [%{text: "test_text", callback_data: "data"}]
-           ]
+      assert i.response.parse_mode == "Markdown"
+    end
+
+    test "put_resp_inline_keyboard" do
+      i =
+        %Interaction{
+          response: %Interaction.Response{reply_markup: nil}
+        }
+        |> Interaction.add_resp_inline_keyboard()
+
+      assert %{inline_keyboard: []} = i.response.reply_markup
+    end
+
+    test "put_resp_inline_keyboard_row" do
+      i =
+        %Interaction{
+          response: %Interaction.Response{
+            reply_markup: %{inline_keyboard: []}
+          }
+        }
+        |> Interaction.add_resp_inline_keyboard_row()
+
+      assert i.response.reply_markup.inline_keyboard == [[]]
+
+      j = Interaction.add_resp_inline_keyboard_row(i)
+
+      assert j.response.reply_markup.inline_keyboard == [[], []]
+    end
+
+    test "add_resp_inline_keyboard_link_button" do
+      i =
+        %Interaction{
+          response: %Interaction.Response{
+            reply_markup: %{
+              inline_keyboard: [[], []]
+            }
+          },
+          user: %User{}
+        }
+        |> Interaction.add_resp_inline_keyboard_link_button("test text", "https://example.com")
+
+      assert i.response.reply_markup.inline_keyboard == [
+               [],
+               [%{text: "test text", url: "https://example.com"}]
+             ]
+    end
+
+    test "add_resp_inline_keyboard_callback_button" do
+      i =
+        %Interaction{
+          response: %Interaction.Response{
+            reply_markup: %{
+              inline_keyboard: [[], []]
+            }
+          },
+          user: %User{}
+        }
+        |> Interaction.add_resp_inline_keyboard_callback_button("test_text", "data")
+
+      assert i.response.reply_markup.inline_keyboard == [
+               [],
+               [%{text: "test_text", callback_data: "data"}]
+             ]
+    end
   end
 end

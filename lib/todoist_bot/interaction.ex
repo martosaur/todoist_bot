@@ -2,8 +2,7 @@ defmodule TodoistBot.Interaction do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias __MODULE__
-  alias TodoistBot.Interaction.User
+  alias TodoistBot.User
   alias TodoistBot.Repo
 
   @primary_key false
@@ -113,41 +112,30 @@ defmodule TodoistBot.Interaction do
   end
 
   def notification(chat_id, text) do
-    %Interaction{
-      response: %TodoistBot.Interaction.Response{chat_id: chat_id},
-      user: %TodoistBot.Interaction.User{}
+    %__MODULE__{
+      response: %__MODULE__.Response{chat_id: chat_id}
     }
     |> put_resp_text(text)
     |> put_resp_type(:message)
   end
 
-  def new_user_state(%Interaction{} = i) do
-    user = TodoistBot.Interaction.User.new_state(i.user)
-    put_in(i.user, user)
-  end
+  def put_resp_text(%__MODULE__{} = i, text), do: put_in(i.response.text, text)
+  def put_resp_type(%__MODULE__{} = i, type), do: put_in(i.response.type, type)
 
-  def put_user_state(%Interaction{} = i, fields \\ []) do
-    user = struct(i.user, fields)
-    put_in(i.user, user)
-  end
-
-  def put_resp_text(%Interaction{} = i, text), do: put_in(i.response.text, text)
-  def put_resp_type(%Interaction{} = i, type), do: put_in(i.response.type, type)
-
-  def put_resp_parse_mode_markdown(%Interaction{} = i),
+  def put_resp_parse_mode_markdown(%__MODULE__{} = i),
     do: put_in(i.response.parse_mode, "Markdown")
 
-  def add_resp_inline_keyboard(%Interaction{} = i) do
+  def add_resp_inline_keyboard(%__MODULE__{} = i) do
     put_in(i.response.reply_markup, %{inline_keyboard: []})
   end
 
-  def add_resp_inline_keyboard_row(%Interaction{} = i) do
+  def add_resp_inline_keyboard_row(%__MODULE__{} = i) do
     keyboard = i.response.reply_markup.inline_keyboard
 
     put_in(i.response.reply_markup.inline_keyboard, keyboard ++ [[]])
   end
 
-  def add_resp_inline_keyboard_link_button(%Interaction{} = i, text, link) do
+  def add_resp_inline_keyboard_link_button(%__MODULE__{} = i, text, link) do
     keyboard = i.response.reply_markup.inline_keyboard
     row = i.response.reply_markup.inline_keyboard |> List.last()
     button = %{text: text, url: link}
@@ -158,7 +146,7 @@ defmodule TodoistBot.Interaction do
     )
   end
 
-  def add_resp_inline_keyboard_callback_button(%Interaction{} = i, text, callback_data) do
+  def add_resp_inline_keyboard_callback_button(%__MODULE__{} = i, text, callback_data) do
     keyboard = i.response.reply_markup.inline_keyboard
     row = i.response.reply_markup.inline_keyboard |> List.last()
     button = %{text: text, callback_data: callback_data}

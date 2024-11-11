@@ -57,7 +57,13 @@ defmodule TodoistBot.Webhook do
   defp parse_update(conn, _opts), do: assign(conn, :update, conn.body_params)
 
   defp invoke_processor(%{assigns: %{update: %{} = update}} = conn, _opts) do
-    Task.start(TodoistBot.Processor, :process_message, [update])
+    Task.Supervisor.start_child(
+      TodoistBot.TaskSupervisor,
+      TodoistBot.Processor,
+      :process_message,
+      [update]
+    )
+
     conn
   end
 

@@ -25,7 +25,10 @@ defmodule TodoistBot.Processor do
         send_message(response)
 
       :edit_text ->
-        answer_callback_query(response)
+        Task.Supervisor.start_child(TodoistBot.TaskSupervisor, fn ->
+          answer_callback_query(response)
+        end)
+
         edit_message_text(response)
 
       :answer_callback ->
@@ -49,18 +52,16 @@ defmodule TodoistBot.Processor do
   end
 
   defp answer_callback_query(%Interaction.Response{} = response) do
-    Task.start(fn ->
-      params =
-        Map.reject(
-          %{
-            callback_query_id: response.callback_query_id,
-            text: response.answer_callback_query_text
-          },
-          fn {_, v} -> v == nil end
-        )
+    params =
+      Map.reject(
+        %{
+          callback_query_id: response.callback_query_id,
+          text: response.answer_callback_query_text
+        },
+        fn {_, v} -> v == nil end
+      )
 
-      API.request("answer_callback_query", params)
-    end)
+    API.request("answer_callback_query", params)
   end
 
   defp edit_message_text(%Interaction.Response{} = response) do

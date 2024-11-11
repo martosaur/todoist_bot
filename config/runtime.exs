@@ -4,7 +4,9 @@ if config_env() == :prod do
   config :todoist_bot, TodoistBot.Repo, database: System.fetch_env!("DB_PATH")
 
   config :disco_log,
-    token: System.fetch_env!("DISCO_LOG_TOKEN")
+    token: System.fetch_env!("DISCO_LOG_TOKEN"),
+    info_channel_id: System.fetch_env!("DISCO_INFO_CHANNEL_ID"),
+    error_channel_id: System.fetch_env!("DISCO_ERROR_CHANNEL_ID")
 
   config :todoist_bot,
     bot_token: System.fetch_env!("BOT_TOKEN"),

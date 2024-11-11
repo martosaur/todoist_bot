@@ -1,5 +1,5 @@
 #!/bin/bash
-docker build -t todoist-bot-builder:latest .
+docker buildx build --platform linux/amd64 -t todoist-bot-builder:latest .
 
 mkdir -p ./_build/ubuntu/rel
 

@@ -9,6 +9,7 @@ RUN mix local.hex --force && \
     mix local.rebar --force
 
 ENV MIX_ENV=prod
+ENV ERL_FLAGS="+JPperf true"
 
 WORKDIR /app
 
@@ -23,5 +24,6 @@ COPY config/config.exs ./config/
 COPY config/prod.exs ./config/
 COPY config/runtime.exs ./config/
 COPY lib ./lib
+COPY priv ./priv
 COPY rel ./rel
 CMD ["mix", "release", "--overwrite"]

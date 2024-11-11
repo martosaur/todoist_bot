@@ -9,7 +9,7 @@ defmodule TodoistBot.Webhook do
   plug(Plug.Parsers,
     parsers: [:json],
     pass: ["application/json"],
-    json_decoder: {Jason, :decode!, [[keys: :atoms]]}
+    json_decoder: Jason
   )
 
   plug(:parse_update)

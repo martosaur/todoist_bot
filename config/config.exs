@@ -7,6 +7,7 @@ config :todoist_bot, TodoistBot.Repo,
 
 config :todoist_bot,
   telegram_adapter: Req,
+  todoist_adapter: Req,
   ecto_repos: [TodoistBot.Repo]
 
 import_config "#{Mix.env()}.exs"

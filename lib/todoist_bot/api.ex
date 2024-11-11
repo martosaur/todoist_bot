@@ -1,5 +1,6 @@
 defmodule TodoistBot.Api do
   use Plug.Router
+  require Logger
 
   @scope "task:add"
 
@@ -27,10 +28,10 @@ defmodule TodoistBot.Api do
     with nil <- conn.query_params["error"],
          auth_code <- conn.query_params["code"],
          auth_state <- conn.query_params["state"],
-         {:ok, notify_chat_id} <-
+         {:ok, user} <-
            TodoistBot.Storage.complete_authorization(auth_code, auth_state) do
       Task.start(fn ->
-        notify_chat_id
+        user.last_chat_id
         |> TodoistBot.Interaction.notification(
           "You have been succesfully authorized! Now simply drop me a message to create a new task"
         )
@@ -43,7 +44,9 @@ defmodule TodoistBot.Api do
         "You have been succesfully authorized."
       )
     else
-      _ ->
+      error ->
+        Logger.error("Authorization failed", error: error)
+
         Plug.Conn.send_resp(conn, 200, "Something went wrong")
     end
   end

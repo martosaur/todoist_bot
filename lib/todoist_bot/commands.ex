@@ -75,7 +75,7 @@ defmodule TodoistBot.Commands do
             end
 
           {_, error} ->
-            Logger.error("Could not add task", interaction: interaction, error: error)
+            Logger.error("Could not add task", extra: [interaction: interaction, error: error])
 
             interaction
             |> Interaction.put_resp_text("Something went terribly wrong 😢 Let's maybe try again?")

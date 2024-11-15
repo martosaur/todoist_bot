@@ -32,7 +32,7 @@ defmodule TodoistBot.Api do
     with nil <- conn.query_params["error"],
          auth_code <- conn.query_params["code"],
          auth_state <- conn.query_params["state"],
-         {:ok, user} <- complete_authorization(auth_code, auth_state) do
+         {:ok, %User{} = user} <- complete_authorization(auth_code, auth_state) do
       Task.Supervisor.start_child(TodoistBot.TaskSupervisor, fn ->
         user.last_chat_id
         |> TodoistBot.Interaction.notification(
@@ -48,7 +48,7 @@ defmodule TodoistBot.Api do
       )
     else
       error ->
-        Logger.error("Authorization failed", error: error)
+        Logger.error("Authorization failed", extra: [error: error])
 
         Plug.Conn.send_resp(conn, 200, "Something went wrong")
     end

@@ -21,6 +21,7 @@ config :disco_log,
     "oban" => "1302398120206008374"
   },
   info_channel_id: "1302398121430618174",
-  error_channel_id: "1302398123011739748"
+  error_channel_id: "1302398123011739748",
+  metadata: [:extra]
 
 import_config "#{Mix.env()}.exs"

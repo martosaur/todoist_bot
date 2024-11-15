@@ -31,10 +31,10 @@ defmodule TodoistBot.MixProject do
       {:jason, "~> 1.4"},
       {:mox, "~> 1.1", only: :test},
       {:req, "~> 0.5.6"},
-      {:off_broadway_telegram, git: "https://github.com/martosaur/off_broadway_telegram.git"},
+      {:off_broadway_telegram, "~> 1.0"},
       {:ecto_sql, "~> 3.0"},
       {:ecto_sqlite3, "~> 0.17"},
-      {:disco_log, "~> 0.5.2"}
+      {:disco_log, "~> 0.6"}
     ]
   end
 end

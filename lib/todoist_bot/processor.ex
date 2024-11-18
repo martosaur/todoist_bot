@@ -4,8 +4,6 @@ defmodule TodoistBot.Processor do
   alias TodoistBot.Telegram.API
   require Logger
 
-  def process_message(nil), do: Logger.error("Processor received nil")
-
   def process_message(%{} = update) do
     with {:ok, interaction} <- Interaction.from_update(update),
          {:ok, interaction} <- Interaction.load_user(interaction, update) do
@@ -61,7 +59,7 @@ defmodule TodoistBot.Processor do
         fn {_, v} -> v == nil end
       )
 
-    API.request("answer_callback_query", params)
+    API.request("answerCallbackQuery", params)
   end
 
   defp edit_message_text(%Interaction.Response{} = response) do

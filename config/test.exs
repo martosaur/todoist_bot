@@ -16,3 +16,5 @@ config :todoist_bot,
 
 config :disco_log,
   enable: false
+
+config :logger, level: :warning

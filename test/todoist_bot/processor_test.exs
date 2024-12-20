@@ -2,7 +2,6 @@ defmodule TodoistBot.ProcessorTest do
   use TodoistBot.DataCase, async: false
 
   alias TodoistBot.Processor
-  alias TodoistBot.Interaction
   alias TodoistBot.User
   alias TodoistBot.Repo
   alias TodoistBot.Telegram
@@ -69,12 +68,11 @@ defmodule TodoistBot.ProcessorTest do
     end
 
     test "unauthorized: simple command" do
-      user =
-        Repo.insert!(%User{
-          telegram_id: 222,
-          last_chat_id: 111,
-          auth_state: "222.random"
-        })
+      Repo.insert!(%User{
+        telegram_id: 222,
+        last_chat_id: 111,
+        auth_state: "222.random"
+      })
 
       update = %{
         "callback_query" => nil,
@@ -111,14 +109,13 @@ defmodule TodoistBot.ProcessorTest do
     end
 
     test "authorized: simple command" do
-      user =
-        Repo.insert!(%User{
-          telegram_id: 222,
-          last_chat_id: 111,
-          auth_state: "222.random",
-          access_token: "user_token",
-          auth_code: "auth_code"
-        })
+      Repo.insert!(%User{
+        telegram_id: 222,
+        last_chat_id: 111,
+        auth_state: "222.random",
+        access_token: "user_token",
+        auth_code: "auth_code"
+      })
 
       update = %{
         "callback_query" => nil,
@@ -155,12 +152,11 @@ defmodule TodoistBot.ProcessorTest do
     end
 
     test "logout" do
-      user =
-        Repo.insert!(%User{
-          telegram_id: 222,
-          last_chat_id: 111,
-          auth_state: "222.random"
-        })
+      Repo.insert!(%User{
+        telegram_id: 222,
+        last_chat_id: 111,
+        auth_state: "222.random"
+      })
 
       update = %{
         "callback_query" => nil,
@@ -206,12 +202,11 @@ defmodule TodoistBot.ProcessorTest do
     end
 
     test "confirm logout" do
-      user =
-        Repo.insert!(%User{
-          telegram_id: 222,
-          last_chat_id: 111,
-          auth_state: "222.random"
-        })
+      Repo.insert!(%User{
+        telegram_id: 222,
+        last_chat_id: 111,
+        auth_state: "222.random"
+      })
 
       update = %{
         "callback_query" => %{

@@ -34,7 +34,8 @@ defmodule TodoistBot.MixProject do
       {:off_broadway_telegram, "~> 1.0"},
       {:ecto_sql, "~> 3.0"},
       {:ecto_sqlite3, "~> 0.17"},
-      {:disco_log, "~> 0.7"}
+      {:disco_log, "1.0.0-rc.2"},
+      {:mint_web_socket, "~> 1.0"}
     ]
   end
 end

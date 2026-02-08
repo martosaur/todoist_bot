@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.18.2-erlang-27.2.1-ubuntu-noble-20241015
+FROM hexpm/elixir:1.19.5-erlang-28.3.1-ubuntu-noble-20260113
 
 # install build dependencies
 RUN apt-get update -y && apt-get install -y build-essential git \

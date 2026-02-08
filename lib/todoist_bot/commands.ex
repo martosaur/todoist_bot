@@ -48,7 +48,7 @@ defmodule TodoistBot.Commands do
 
       %{user: %{access_token: token} = user, request: %{text: text}}
       when not is_nil(token) and not is_nil(text) ->
-        "rest/v2/tasks"
+        "api/v1/tasks"
         |> Todoist.API.request(token, method: :post, json: %{content: text})
         |> case do
           {:ok, %{status: 200}} ->
